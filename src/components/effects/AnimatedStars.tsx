@@ -13,18 +13,18 @@ const AnimatedStars = () => {
     starsRef.current.rotation.y += 0.0001;
     starsRef.current.rotation.z += 0.0001;
   });
-  /* return null; */
+
   return (
     <Suspense fallback={null}>
       <Stars
         ref={starsRef}
-        radius={50}
-        depth={10}
-        count={800}
-        factor={2}
+        radius={20}
+        depth={90}
+        count={1000}
+        factor={4}
         saturation={0}
         fade
-        speed={1}
+        speed={0}
       />
     </Suspense>
   );

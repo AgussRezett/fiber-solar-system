@@ -3,6 +3,7 @@ import AnimatedStars from './components/effects/AnimatedStars';
 import { useRef } from 'react';
 import { DirectionalLight, DirectionalLightHelper } from 'three';
 import EarthSystem from './components/systems/EarthSystem/EarthSystem';
+import GalaxyBackground from './scenes/GalaxyBackground';
 
 const App = () => {
   const directionalLightRef = useRef<DirectionalLight>(null!);
@@ -13,6 +14,7 @@ const App = () => {
     <>
       <color attach={'background'} args={['#01010a']}></color>
       <AnimatedStars />
+      <GalaxyBackground />
       <EarthSystem />
       <directionalLight
         castShadow
@@ -23,7 +25,6 @@ const App = () => {
         shadow-radius={4}
         intensity={1}
       />
-      {/* <ambientLight intensity={2} /> */}
     </>
   );
 };

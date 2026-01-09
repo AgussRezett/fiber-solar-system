@@ -7,11 +7,13 @@ import { OrbitControls } from '@react-three/drei';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Canvas
-      camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 5, 5] }}
-      shadows
-    >
-      <OrbitControls />
+    <Canvas camera={{ fov: 75, near: 0.1, position: [0, 5, 5] }} shadows>
+      <OrbitControls
+        minDistance={1.8}
+        maxDistance={260}
+        enableDamping
+        dampingFactor={0.05}
+      />
       <App />
       {/* <Perf /> */}
     </Canvas>

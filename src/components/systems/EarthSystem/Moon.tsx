@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { MathUtils, Group, Mesh } from 'three';
 
 const MOON_DISTANCE = 3;
-const MOON_ORBIT_SPEED = 0.02; // visual
+const MOON_ORBIT_SPEED = 0.2; // visual
 const MOON_TILT = MathUtils.degToRad(6.68);
 
 const Moon = () => {

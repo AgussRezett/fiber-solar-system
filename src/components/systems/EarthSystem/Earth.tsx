@@ -2,7 +2,6 @@ import { useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import { MathUtils, Mesh } from 'three';
-import Moon from '../Moon/Moon';
 
 interface EarthProps {
   displacementScale?: number;
@@ -28,20 +27,17 @@ const Earth = ({ displacementScale = 0.02 }: EarthProps) => {
   });
 
   return (
-    <group>
-      <mesh ref={earthRef} rotation={[0, 0, EARTH_TILT]} receiveShadow>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshPhongMaterial
-          map={earthMap}
-          normalMap={earthNormalMap}
-          specularMap={earthSpecularMap}
-          displacementMap={earthDisplacementMap}
-          displacementScale={displacementScale}
-          shininess={30}
-        />
-      </mesh>
-      <Moon />
-    </group>
+    <mesh ref={earthRef} rotation={[0, 0, EARTH_TILT]} receiveShadow>
+      <sphereGeometry args={[1, 32, 32]} />
+      <meshPhongMaterial
+        map={earthMap}
+        normalMap={earthNormalMap}
+        specularMap={earthSpecularMap}
+        displacementMap={earthDisplacementMap}
+        displacementScale={displacementScale}
+        shininess={30}
+      />
+    </mesh>
   );
 };
 

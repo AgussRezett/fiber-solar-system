@@ -1,8 +1,8 @@
 import { useHelper } from '@react-three/drei';
-import AnimatedStars from './components/molecules/AnimatedStars';
-import Earth from './components/molecules/CelestialBodies/Earth/Earth';
+import AnimatedStars from './components/effects/AnimatedStars';
 import { useRef } from 'react';
 import { DirectionalLight, DirectionalLightHelper } from 'three';
+import EarthSystem from './components/systems/EarthSystem/EarthSystem';
 
 const App = () => {
   const directionalLightRef = useRef<DirectionalLight>(null!);
@@ -13,12 +13,15 @@ const App = () => {
     <>
       <color attach={'background'} args={['#01010a']}></color>
       <AnimatedStars />
-      <Earth displacementScale={0.15} />
+      <EarthSystem />
       <directionalLight
-        ref={directionalLightRef}
-        position={[0, 0, 5]}
-        intensity={2}
         castShadow
+        position={[0, 0, 5]}
+        shadow-mapSize-width={4096}
+        shadow-mapSize-height={4096}
+        shadow-bias={-0.0005}
+        shadow-radius={4}
+        intensity={1}
       />
       {/* <ambientLight intensity={2} /> */}
     </>

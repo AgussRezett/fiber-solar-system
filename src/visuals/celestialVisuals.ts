@@ -43,6 +43,31 @@ export const CELESTIAL_VISUALS = {
     map: '/assets/moon/map.jpg',
     shininess: 10,
   },
+  PL_MARS: {
+    material: 'phong',
+    map: '/assets/mars/map.jpg',
+    shininess: 30,
+  },
+  PL_JUPITER: {
+    material: 'phong',
+    map: '/assets/jupiter/map.jpg',
+    shininess: 30,
+  },
+  PL_SATURN: {
+    material: 'phong',
+    map: '/assets/saturn/map.jpg',
+    shininess: 30,
+  },
+  PL_URANUS: {
+    material: 'phong',
+    map: '/assets/uranus/map.jpg',
+    shininess: 30,
+  },
+  PL_NEPTUNE: {
+    material: 'phong',
+    map: '/assets/neptune/map.jpg',
+    shininess: 30,
+  },
 };
 
 export const DEFAULT_VISUALS_BY_TYPE = {

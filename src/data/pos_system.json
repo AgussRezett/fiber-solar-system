@@ -1,0 +1,107 @@
+[
+  {
+    "id": "PL_MARS",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 3389.5,
+    "orbit": {
+      "radiusKm": 227943000,
+      "periodDays": 686.98,
+      "inclinationDeg": 1.85
+    },
+    "rotation": {
+      "periodHours": 24.62,
+      "axialTiltDeg": 25.19
+    }
+  },
+  {
+    "id": "MO_PHOBOS",
+    "type": "satellite",
+    "parent": "PL_MARS",
+    "radiusKm": 11.27,
+    "orbit": {
+      "radiusKm": 9376,
+      "periodDays": 0.319,
+      "inclinationDeg": 1.1
+    },
+    "rotation": {
+      "periodHours": 7.65,
+      "axialTiltDeg": 0
+    }
+  },
+  {
+    "id": "PL_JUPITER",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 69911,
+    "orbit": {
+      "radiusKm": 778340000,
+      "periodDays": 4332.59,
+      "inclinationDeg": 1.3
+    },
+    "rotation": {
+      "periodHours": 9.93,
+      "axialTiltDeg": 3.13
+    }
+  },
+  {
+    "id": "MO_IO",
+    "type": "satellite",
+    "parent": "PL_JUPITER",
+    "radiusKm": 1821.6,
+    "orbit": {
+      "radiusKm": 421700,
+      "periodDays": 1.77,
+      "inclinationDeg": 0.04
+    },
+    "rotation": {
+      "periodHours": 42.5,
+      "axialTiltDeg": 0
+    }
+  },
+  {
+    "id": "PL_SATURN",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 58232,
+    "orbit": {
+      "radiusKm": 1429400000,
+      "periodDays": 10759,
+      "inclinationDeg": 2.49
+    },
+    "rotation": {
+      "periodHours": 10.7,
+      "axialTiltDeg": 26.73
+    }
+  },
+  {
+    "id": "PL_URANUS",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 25362,
+    "orbit": {
+      "radiusKm": 2870990000,
+      "periodDays": 30685,
+      "inclinationDeg": 0.77
+    },
+    "rotation": {
+      "periodHours": -17.24,
+      "axialTiltDeg": 97.77
+    }
+  },
+  {
+    "id": "PL_NEPTUNE",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 24622,
+    "orbit": {
+      "radiusKm": 4498250000,
+      "periodDays": 60190,
+      "inclinationDeg": 1.77
+    },
+    "rotation": {
+      "periodHours": 16.11,
+      "axialTiltDeg": 28.32
+    }
+  }
+]

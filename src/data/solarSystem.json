@@ -1,0 +1,71 @@
+[
+  {
+    "id": "SOL_001",
+    "type": "star",
+    "radiusKm": 6963,
+    "rotation": {
+      "periodHours": 609.12,
+      "axialTiltDeg": 7.25
+    }
+  },
+  {
+    "id": "PL_MERCURY",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 2439.7,
+    "orbit": {
+      "radiusKm": 57909,
+      "periodDays": 87.97,
+      "inclinationDeg": 7.0
+    },
+    "rotation": {
+      "periodHours": 1407.6,
+      "axialTiltDeg": 0.03
+    }
+  },
+  {
+    "id": "PL_VENUS",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 6051.8,
+    "orbit": {
+      "radiusKm": 108209,
+      "periodDays": 224.7,
+      "inclinationDeg": 3.39
+    },
+    "rotation": {
+      "periodHours": -5832.5,
+      "axialTiltDeg": 177.4
+    }
+  },
+  {
+    "id": "PL_EARTH",
+    "type": "planet",
+    "parent": "SOL_001",
+    "radiusKm": 6371,
+    "orbit": {
+      "radiusKm": 149600,
+      "periodDays": 365.25,
+      "inclinationDeg": 0
+    },
+    "rotation": {
+      "periodHours": 23.93,
+      "axialTiltDeg": 23.44
+    }
+  },
+  {
+    "id": "MO_MOON",
+    "type": "satellite",
+    "parent": "PL_EARTH",
+    "radiusKm": 1737.4,
+    "orbit": {
+      "radiusKm": 384,
+      "periodDays": 27.32,
+      "inclinationDeg": 5.14
+    },
+    "rotation": {
+      "periodHours": 655.72,
+      "axialTiltDeg": 6.68
+    }
+  }
+]

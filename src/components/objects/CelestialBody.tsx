@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
-import { KM_TO_UNITS } from '../../consts/scales';
+import { DISTANCE_KM_TO_UNITS, RADIUS_KM_TO_UNITS } from '../../consts/scales';
 import {
   CELESTIAL_VISUALS,
   DEFAULT_VISUALS_BY_TYPE,
@@ -40,7 +40,7 @@ const CelestialBody = ({ data, children }: Props) => {
 
   // órbita
   const orbitRadius = data.orbit?.radiusKm
-    ? data.orbit.radiusKm * KM_TO_UNITS
+    ? data.orbit.radiusKm * DISTANCE_KM_TO_UNITS
     : 0;
 
   const orbitSpeed = data.orbit?.periodDays
@@ -78,7 +78,7 @@ const CelestialBody = ({ data, children }: Props) => {
           castShadow
           receiveShadow
         >
-          <sphereGeometry args={[data.radiusKm * KM_TO_UNITS, 32, 32]} />
+          <sphereGeometry args={[data.radiusKm * RADIUS_KM_TO_UNITS, 32, 32]} />
           {visuals.material === 'basic' ? (
             <meshStandardMaterial
               {...textures}

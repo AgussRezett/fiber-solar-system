@@ -11,7 +11,7 @@
   {
     "id": "PL_MERCURY",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 2439.7,
     "orbit": {
       "radiusKm": 57909,
@@ -26,7 +26,7 @@
   {
     "id": "PL_VENUS",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 6051.8,
     "orbit": {
       "radiusKm": 108209,
@@ -41,7 +41,7 @@
   {
     "id": "PL_EARTH",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 6371,
     "orbit": {
       "radiusKm": 149600,
@@ -56,10 +56,10 @@
   {
     "id": "MO_MOON",
     "type": "satellite",
-    "parent": "PL_EARTH",
+    "parentId": "PL_EARTH",
     "radiusKm": 1737.4,
     "orbit": {
-      "radiusKm": 38400,
+      "radiusKm": 21400,
       "periodDays": 27.32,
       "inclinationDeg": 5.14
     },

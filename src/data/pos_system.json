@@ -2,7 +2,7 @@
   {
     "id": "PL_MARS",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 3389.5,
     "orbit": {
       "radiusKm": 227943000,
@@ -17,7 +17,7 @@
   {
     "id": "MO_PHOBOS",
     "type": "satellite",
-    "parent": "PL_MARS",
+    "parentId": "PL_MARS",
     "radiusKm": 11.27,
     "orbit": {
       "radiusKm": 9376,
@@ -32,7 +32,7 @@
   {
     "id": "PL_JUPITER",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 69911,
     "orbit": {
       "radiusKm": 778340000,
@@ -47,7 +47,7 @@
   {
     "id": "MO_IO",
     "type": "satellite",
-    "parent": "PL_JUPITER",
+    "parentId": "PL_JUPITER",
     "radiusKm": 1821.6,
     "orbit": {
       "radiusKm": 421700,
@@ -62,7 +62,7 @@
   {
     "id": "PL_SATURN",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 58232,
     "orbit": {
       "radiusKm": 1429400000,
@@ -77,7 +77,7 @@
   {
     "id": "PL_URANUS",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 25362,
     "orbit": {
       "radiusKm": 2870990000,
@@ -92,7 +92,7 @@
   {
     "id": "PL_NEPTUNE",
     "type": "planet",
-    "parent": "SOL_001",
+    "parentId": "SOL_001",
     "radiusKm": 24622,
     "orbit": {
       "radiusKm": 4498250000,

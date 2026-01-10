@@ -13,10 +13,12 @@ import { useTexture } from '@react-three/drei';
 
 interface Props {
   data: CelestialBodyInterface;
+  children?: React.ReactNode;
 }
 
-const CelestialBody = ({ data }: Props) => {
+const CelestialBody = ({ data, children }: Props) => {
   const orbitRef = useRef<Group>(null);
+  const bodyRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
 
   const visuals: CelestialVisualInterface =
@@ -62,33 +64,36 @@ const CelestialBody = ({ data }: Props) => {
 
   return (
     <group ref={orbitRef}>
-      <mesh
-        ref={meshRef}
-        position={[orbitRadius, 0, 0]}
-        rotation={[
-          0,
-          0,
-          data.rotation?.axialTiltDeg
-            ? THREE.MathUtils.degToRad(data.rotation.axialTiltDeg)
-            : 0,
-        ]}
-        castShadow
-        receiveShadow
-      >
-        <sphereGeometry args={[data.radiusKm * KM_TO_UNITS, 32, 32]} />
-        {visuals.material === 'basic' ? (
-          <meshStandardMaterial
-            {...textures}
-            emissive={visuals.emissive ? new THREE.Color('red') : undefined}
-          />
-        ) : (
-          <meshPhongMaterial
-            {...textures}
-            shininess={visuals.shininess}
-            displacementScale={visuals.displacementScale}
-          />
-        )}
-      </mesh>
+      <axesHelper args={[5]} />
+      <group ref={bodyRef} position={[orbitRadius, 0, 0]}>
+        <mesh
+          ref={meshRef}
+          rotation={[
+            0,
+            0,
+            data.rotation?.axialTiltDeg
+              ? THREE.MathUtils.degToRad(data.rotation.axialTiltDeg)
+              : 0,
+          ]}
+          castShadow
+          receiveShadow
+        >
+          <sphereGeometry args={[data.radiusKm * KM_TO_UNITS, 32, 32]} />
+          {visuals.material === 'basic' ? (
+            <meshStandardMaterial
+              {...textures}
+              emissive={visuals.emissive ? new THREE.Color('red') : undefined}
+            />
+          ) : (
+            <meshPhongMaterial
+              {...textures}
+              shininess={visuals.shininess}
+              displacementScale={visuals.displacementScale}
+            />
+          )}
+        </mesh>
+        {children}
+      </group>
     </group>
   );
 };

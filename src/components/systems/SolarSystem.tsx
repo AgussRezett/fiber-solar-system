@@ -3,13 +3,21 @@ import celestialObjects from '../../data/solarSystem.json';
 import CelestialBody from '../objects/CelestialBody';
 
 const SolarSystem = () => {
-  return (
-    <>
-      {(celestialObjects as CelestialBodyInterface[]).map((object) => {
-        return <CelestialBody key={object.id} data={object} />;
-      })}
-    </>
+  const childrenMap: Record<string, CelestialBodyInterface[]> = {};
+
+  (celestialObjects as CelestialBodyInterface[]).forEach((body) => {
+    const parentId = body.parentId ?? 'ROOT';
+    if (!childrenMap[parentId]) childrenMap[parentId] = [];
+    childrenMap[parentId].push(body);
+  });
+
+  const renderBody = (body: CelestialBodyInterface) => (
+    <CelestialBody key={body.id} data={body}>
+      {childrenMap[body.id]?.map(renderBody)}
+    </CelestialBody>
   );
+
+  return <>{childrenMap.ROOT?.map(renderBody)}</>;
 };
 
 export default SolarSystem;

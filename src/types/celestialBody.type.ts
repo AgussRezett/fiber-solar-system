@@ -1,5 +1,7 @@
+import type { CelestialBodyId } from '../visuals/celestialVisuals';
+
 export interface CelestialBodyInterface {
-  id: string;
+  id: CelestialBodyId;
   type: string;
   parent?: string;
   radiusKm: number;

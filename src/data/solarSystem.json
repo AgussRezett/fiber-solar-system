@@ -59,7 +59,7 @@
     "parent": "PL_EARTH",
     "radiusKm": 1737.4,
     "orbit": {
-      "radiusKm": 384,
+      "radiusKm": 38400,
       "periodDays": 27.32,
       "inclinationDeg": 5.14
     },

@@ -4,6 +4,12 @@ import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
 import { KM_TO_UNITS } from '../../consts/scales';
+import {
+  CELESTIAL_VISUALS,
+  DEFAULT_VISUALS_BY_TYPE,
+  type CelestialVisualInterface,
+} from '../../visuals/celestialVisuals';
+import { useTexture } from '@react-three/drei';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -12,6 +18,23 @@ interface Props {
 const CelestialBody = ({ data }: Props) => {
   const orbitRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
+
+  const visuals: CelestialVisualInterface =
+    CELESTIAL_VISUALS[data.id] ??
+    DEFAULT_VISUALS_BY_TYPE[data.type as keyof typeof DEFAULT_VISUALS_BY_TYPE];
+
+  const rawTexture = {
+    map: visuals.map,
+    normalMap: visuals.normalMap,
+    specularMap: visuals.specularMap,
+    displacementMap: visuals.displacementMap,
+  };
+
+  const textures = useTexture(
+    Object.fromEntries(
+      Object.entries(rawTexture).filter(([, value]) => value !== undefined)
+    ) as Record<string, string>
+  );
 
   // órbita
   const orbitRadius = data.orbit?.radiusKm
@@ -53,7 +76,18 @@ const CelestialBody = ({ data }: Props) => {
         receiveShadow
       >
         <sphereGeometry args={[data.radiusKm * KM_TO_UNITS, 32, 32]} />
-        <meshPhongMaterial color="white" />
+        {visuals.material === 'basic' ? (
+          <meshStandardMaterial
+            {...textures}
+            emissive={visuals.emissive ? new THREE.Color('red') : undefined}
+          />
+        ) : (
+          <meshPhongMaterial
+            {...textures}
+            shininess={visuals.shininess}
+            displacementScale={visuals.displacementScale}
+          />
+        )}
       </mesh>
     </group>
   );

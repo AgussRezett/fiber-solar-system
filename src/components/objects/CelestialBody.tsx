@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
@@ -62,6 +62,8 @@ const CelestialBody = ({ data, children }: Props) => {
     }
   });
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <group ref={orbitRef}>
       <axesHelper args={[5]} />
@@ -77,18 +79,38 @@ const CelestialBody = ({ data, children }: Props) => {
           ]}
           castShadow
           receiveShadow
+          onClick={(e) => {
+            e.stopPropagation();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any).focusBody(meshRef.current);
+          }}
+          onPointerEnter={(event) => (
+            event.stopPropagation(),
+            setIsHovered(true),
+            (document.body.style.cursor = 'pointer')
+          )}
+          onPointerLeave={() => (
+            setIsHovered(false),
+            (document.body.style.cursor = 'default')
+          )}
         >
           <sphereGeometry args={[data.radiusKm * RADIUS_KM_TO_UNITS, 32, 32]} />
           {visuals.material === 'basic' ? (
             <meshStandardMaterial
               {...textures}
               emissive={visuals.emissive ? new THREE.Color('red') : undefined}
+              emissiveIntensity={isHovered ? 0.6 : 0}
             />
           ) : (
             <meshPhongMaterial
               {...textures}
-              shininess={visuals.shininess}
               displacementScale={visuals.displacementScale}
+              emissive={
+                isHovered
+                  ? new THREE.Color('#ffffff')
+                  : new THREE.Color('#000000')
+              }
+              shininess={isHovered ? 80 : visuals.shininess}
             />
           )}
         </mesh>

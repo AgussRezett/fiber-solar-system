@@ -1,18 +1,19 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
+import CameraHud from './components/hud/CameraHud/CameraHud';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 
 createRoot(document.getElementById('root')!).render(
-  <Canvas camera={{ fov: 75, near: 0.1, position: [0, 5, 5] }} shadows>
-    <OrbitControls
-      minDistance={1.8}
-      maxDistance={260}
-      enableDamping
-      dampingFactor={0.05}
-    />
-    <App />
-    {/* <Perf /> */}
-  </Canvas>
+  <>
+    <CameraHud />
+    <Canvas
+      camera={{ position: [0, 5, 5], far: 100_000_000 }}
+      eventSource={document.body}
+      eventPrefix="client"
+      shadows
+    >
+      <App />
+    </Canvas>
+  </>
 );

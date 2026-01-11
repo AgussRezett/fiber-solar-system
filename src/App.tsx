@@ -2,6 +2,9 @@ import { useHelper } from '@react-three/drei';
 import { useRef } from 'react';
 import { DirectionalLight, DirectionalLightHelper } from 'three';
 import SolarSystem from './components/systems/SolarSystem';
+import CameraController from './components/effects/CameraController';
+import GalaxyBackground from './scenes/GalaxyBackground';
+import AnimatedStars from './components/effects/AnimatedStars';
 
 const App = () => {
   const directionalLightRef = useRef<DirectionalLight>(null!);
@@ -11,10 +14,11 @@ const App = () => {
   return (
     <>
       <color attach={'background'} args={['#01010a']}></color>
-      {/* <AnimatedStars />
-      <GalaxyBackground /> */}
+      <AnimatedStars />
+      <GalaxyBackground />
 
       <SolarSystem />
+      <CameraController />
 
       {/*  <directionalLight
         castShadow

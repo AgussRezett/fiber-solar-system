@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
@@ -10,6 +10,7 @@ import {
   type CelestialVisualInterface,
 } from '../../visuals/celestialVisuals';
 import { useTexture } from '@react-three/drei';
+import { useCameraStore } from '../../store/useCameraStore';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -20,6 +21,14 @@ const CelestialBody = ({ data, children }: Props) => {
   const orbitRef = useRef<Group>(null);
   const bodyRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
+
+  const { focusById, registerBody } = useCameraStore();
+
+  useEffect(() => {
+    if (bodyRef.current) {
+      registerBody(data.id, bodyRef.current);
+    }
+  }, [data.id, registerBody]);
 
   const visuals: CelestialVisualInterface =
     CELESTIAL_VISUALS[data.id] ??
@@ -81,8 +90,8 @@ const CelestialBody = ({ data, children }: Props) => {
           receiveShadow
           onClick={(e) => {
             e.stopPropagation();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).focusBody(meshRef.current);
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            focusById && focusById(data.id);
           }}
           onPointerEnter={(event) => (
             event.stopPropagation(),

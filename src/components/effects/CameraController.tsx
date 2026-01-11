@@ -15,23 +15,20 @@ const MAX_PITCH = Math.PI / 2 - 0.01;
 
 const CameraController = () => {
   const { camera, gl } = useThree();
-  const { cameraMode, setCameraMode } = useCameraStore();
+  const { cameraMode, setCameraMode, focusTarget } = useCameraStore();
 
-  const targetRef = useRef<THREE.Object3D | null>(null);
   const keys = useRef<Record<string, boolean>>({});
-
   const yaw = useRef(0);
   const pitch = useRef(0);
 
-  // ───────────────── KEYBOARD ─────────────────
+  //eslint-disable-next-line
+  const controlsRef = useRef<any>(null);
+
+  // ───────────── Keyboard ─────────────
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       keys.current[e.code] = true;
-
-      if (e.code === 'Escape') {
-        targetRef.current = null;
-        setCameraMode(CAMERA_FREE_MODE);
-      }
+      if (e.code === 'Escape') setCameraMode(CAMERA_FREE_MODE);
     };
 
     const up = (e: KeyboardEvent) => {
@@ -44,9 +41,10 @@ const CameraController = () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
     };
-  }, [setCameraMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // ───────────────── MOUSE LOOK ─────────────────
+  // ───────────── Mouse look (FREE) ─────────────
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       if (cameraMode !== CAMERA_FREE_MODE) return;
@@ -54,7 +52,6 @@ const CameraController = () => {
 
       yaw.current -= e.movementX * SENSITIVITY;
       pitch.current -= e.movementY * SENSITIVITY;
-
       pitch.current = Math.max(-MAX_PITCH, Math.min(MAX_PITCH, pitch.current));
 
       camera.rotation.order = 'YXZ';
@@ -66,53 +63,58 @@ const CameraController = () => {
     return () => document.removeEventListener('mousemove', onMouseMove);
   }, [cameraMode, camera, gl.domElement]);
 
-  // ───────────────── MOVEMENT ─────────────────
+  // ───────────── Movement (FREE) ─────────────
   useFrame((_, delta) => {
     if (cameraMode !== CAMERA_FREE_MODE) return;
 
     const speed =
       MOVE_SPEED * (keys.current.ShiftLeft ? FAST_MULTIPLIER : 1) * delta;
 
-    const move = new THREE.Vector3(
+    const dir = new THREE.Vector3(
       (keys.current.KeyD ? 1 : 0) - (keys.current.KeyA ? 1 : 0),
       (keys.current.Space ? 1 : 0) - (keys.current.ControlLeft ? 1 : 0),
       (keys.current.KeyS ? 1 : 0) - (keys.current.KeyW ? 1 : 0)
     );
 
-    if (move.lengthSq() === 0) return;
+    if (dir.lengthSq() === 0) return;
 
-    move.normalize();
-    move.applyQuaternion(camera.quaternion);
-    camera.position.addScaledVector(move, speed);
+    dir.normalize().applyQuaternion(camera.quaternion);
+    camera.position.addScaledVector(dir, speed);
   });
 
-  // ───────────────── POINTER LOCK ─────────────────
+  // ───────── ORBIT FOLLOW TARGET ─────────
+  useFrame(() => {
+    if (
+      cameraMode === CAMERA_ORBIT_MODE &&
+      focusTarget &&
+      controlsRef.current
+    ) {
+      const worldPos = new THREE.Vector3();
+      focusTarget.getWorldPosition(worldPos);
+      controlsRef.current.target.copy(worldPos);
+      controlsRef.current.update();
+    }
+  });
+
+  // ───────────── Pointer lock sync ─────────────
   useEffect(() => {
     if (cameraMode === CAMERA_FREE_MODE) {
+      yaw.current = camera.rotation.y;
+      pitch.current = camera.rotation.x;
       gl.domElement.requestPointerLock();
     } else {
       document.exitPointerLock();
     }
-  }, [cameraMode, gl.domElement]);
-
-  // ───────────────── ORBIT API ─────────────────
-  const focusBody = (object: THREE.Object3D) => {
-    targetRef.current = object;
-    setCameraMode(CAMERA_ORBIT_MODE);
-  };
-
-  useEffect(() => {
-    useCameraStore.getState().registerFocus(focusBody);
-  }, []);
+  }, [cameraMode, camera, gl.domElement]);
 
   return (
     <>
-      {cameraMode === CAMERA_ORBIT_MODE && targetRef.current && (
+      {cameraMode === CAMERA_ORBIT_MODE && focusTarget && (
         <OrbitControls
+          ref={controlsRef}
           args={[camera, gl.domElement]}
-          target={targetRef.current.position}
+          target={focusTarget.position}
           enablePan={false}
-          enableZoom
           enableDamping
           dampingFactor={0.1}
         />

@@ -1,30 +1,22 @@
-import { useCameraStore } from '../../../store/useCameraStore';
-import {
-  CAMERA_FREE_MODE,
-  CAMERA_ORBIT_MODE,
-} from '../../../types/cameraModes.type';
 import style from './CameraHud.module.css';
+import { useCameraStore } from '../../../store/useCameraStore';
+import { CAMERA_FREE_MODE } from '../../../types/cameraModes.type';
+
 const CameraHud = () => {
-  const { cameraMode } = useCameraStore();
-  const focusBody = useCameraStore((s) => s.focusBody);
+  const { cameraMode, setCameraMode, focusById } = useCameraStore();
+
   return (
     <div className={style.hudContainer}>
       <div className={style.cameraChip}>
         CAM: {cameraMode === CAMERA_FREE_MODE ? 'FREE' : 'ORBIT'}
-        {cameraMode === CAMERA_ORBIT_MODE && (
-          <div style={{ opacity: 0.7 }}>ESC → Free cam</div>
-        )}
-        {cameraMode === CAMERA_FREE_MODE && (
-          <div style={{ opacity: 0.7 }}>WASD · Mouse · Shift</div>
-        )}
       </div>
 
-      <button onClick={() => focusBody?.(earthRef.current!)}>
-        Focus Earth
+      <button onClick={() => focusById?.('SOL_001')}>Ir al Sol</button>
+      <button onClick={() => focusById?.('PL_EARTH')}>Ir a la Tierra</button>
+
+      <button onClick={() => setCameraMode(CAMERA_FREE_MODE)}>
+        Cámara libre
       </button>
-      {/* <button onClick={() => goToPlanet("PL_EARTH")}> */}
-      {/* <button onClick={() => goToPlanet('PL_EARTH')}>Go to Earth</button>
-      <button onClick={freeCamera}>Free Camera</button> */}
     </div>
   );
 };

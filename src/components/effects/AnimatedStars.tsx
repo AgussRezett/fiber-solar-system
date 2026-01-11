@@ -18,7 +18,7 @@ const AnimatedStars = () => {
     <Suspense fallback={null}>
       <Stars
         ref={starsRef}
-        radius={20}
+        radius={2500}
         depth={90}
         count={1000}
         factor={4}

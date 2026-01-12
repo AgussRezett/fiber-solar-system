@@ -25,6 +25,8 @@ const CelestialBody = ({ data, children }: Props) => {
   const bodyRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
 
+  const cloudRef = useRef<Group>(null);
+
   const { startOrbitById, registerBody } = useCameraStore();
 
   useEffect(() => {
@@ -36,6 +38,8 @@ const CelestialBody = ({ data, children }: Props) => {
   const visuals: CelestialVisualInterface =
     CELESTIAL_VISUALS[data.id] ??
     DEFAULT_VISUALS_BY_TYPE[data.type as keyof typeof DEFAULT_VISUALS_BY_TYPE];
+
+  const features = visuals.features;
 
   const rawTexture = {
     map: visuals.map,
@@ -72,16 +76,24 @@ const CelestialBody = ({ data, children }: Props) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += rotationSpeed * delta;
     }
+
+    if (cloudRef.current && features?.clouds) {
+      cloudRef.current.rotation.y += rotationSpeed * delta;
+    }
   });
 
   const [isHovered, setIsHovered] = useState(false);
 
   const radiusUnits = data.radiusKm * RADIUS_KM_TO_UNITS;
-  const features = visuals.features;
 
   const axialTilt = data.rotation?.axialTiltDeg
     ? THREE.MathUtils.degToRad(data.rotation.axialTiltDeg)
     : 0;
+
+  const cloudTexture = features?.clouds?.map
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useTexture(features.clouds.map)
+    : null;
 
   return (
     <group ref={orbitRef}>
@@ -100,8 +112,37 @@ const CelestialBody = ({ data, children }: Props) => {
           </group>
         )}
         {features?.atmosphere && (
-          <Atmosphere radius={radiusUnits} {...features.atmosphere} />
+          <Atmosphere
+            radius={radiusUnits}
+            {...features.atmosphere}
+            normalMap={textures.displacementMap}
+            normalScale={0.1}
+          />
         )}
+        {features?.clouds && cloudTexture && (
+          <group ref={cloudRef} rotation={[0, 0, axialTilt]}>
+            <mesh>
+              <sphereGeometry
+                args={[radiusUnits * (features.clouds.scale ?? 1.01), 96, 96]}
+              />
+              <meshPhongMaterial
+                normalMap={textures.normalMap}
+                normalScale={new THREE.Vector2(0.2, 0.2)}
+                map={cloudTexture}
+                transparent
+                opacity={features.clouds.opacity}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                displacementMap={textures.displacementMap}
+                displacementScale={
+                  radiusUnits * ((visuals?.displacementScale ?? 0) * 0.1)
+                }
+                shininess={5}
+              />
+            </mesh>
+          </group>
+        )}
+
         <mesh
           ref={meshRef}
           rotation={[0, 0, axialTilt]}
@@ -132,7 +173,7 @@ const CelestialBody = ({ data, children }: Props) => {
           ) : (
             <meshPhongMaterial
               {...textures}
-              displacementScale={visuals.displacementScale}
+              displacementScale={visuals.displacementScale ?? 0}
               emissive={
                 isHovered
                   ? new THREE.Color('#ffffff')

@@ -1,5 +1,12 @@
 export type CelestialBodyId = keyof typeof CELESTIAL_VISUALS;
 
+type CloudVisual = {
+  map: string;
+  opacity: number;
+  speed: number;
+  scale?: number;
+};
+
 export type RingsVisual = {
   innerRadiusMultiplier: number;
   outerRadiusMultiplier: number;
@@ -28,6 +35,7 @@ export type CelestialVisualInterface = {
   features?: {
     rings?: RingsVisual;
     atmosphere?: AtmosphereVisual;
+    clouds?: CloudVisual;
   };
 };
 
@@ -52,11 +60,18 @@ export const CELESTIAL_VISUALS = {
     material: 'phong',
     map: '/assets/earth/map.jpg',
     normalMap: '/assets/earth/normal.png',
-    specularMap: '/assets/earth/specular.png',
+    specularMap: '/assets/earth/specular.jpg',
     displacementMap: '/assets/earth/displacement.jpg',
-    displacementScale: 0.05,
+    displacementScale: 0.15,
     shininess: 30,
     features: {
+      clouds: {
+        map: '/assets/earth/clouds.jpg',
+        opacity: 0.6,
+        speed: 0.01,
+        scale: 1.01,
+      },
+
       atmosphere: {
         color: '#6fb7ff',
         opacity: 0.25,
@@ -67,6 +82,8 @@ export const CELESTIAL_VISUALS = {
   MO_MOON: {
     material: 'phong',
     map: '/assets/moon/map.jpg',
+    displacementMap: '/assets/moon/displacement.jpg',
+    displacementScale: 0.003,
     shininess: 10,
   },
   PL_MARS: {

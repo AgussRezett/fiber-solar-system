@@ -3,7 +3,6 @@ import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import celestialObjects from '../data/solarSystem.json';
-import { DISTANCE_KM_TO_UNITS } from '../consts/scales';
 
 const GalaxyBackground = () => {
   const maxOrbitKm = Math.max(
@@ -24,8 +23,6 @@ const GalaxyBackground = () => {
     galaxyRef.current.rotation.y += 0.0001;
     galaxyRef.current.rotation.z += 0.0001;
   });
-
-  console.log(maxOrbitKm * DISTANCE_KM_TO_UNITS);
 
   return (
     <mesh ref={galaxyRef}>

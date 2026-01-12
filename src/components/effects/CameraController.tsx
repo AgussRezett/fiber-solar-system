@@ -15,7 +15,7 @@ const MAX_PITCH = Math.PI / 2 - 0.01;
 const MIN_SPEED = 10;
 const MAX_SPEED = 500;
 
-const DEBUG = true;
+const DEBUG = false;
 
 const CameraController = () => {
   const { camera, gl } = useThree();
@@ -30,6 +30,11 @@ const CameraController = () => {
 
   //eslint-disable-next-line
   const controlsRef = useRef<any>(null);
+
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const hasDragged = useRef(false);
+
+  const DRAG_THRESHOLD = 5; // px
 
   // ───────────── Keyboard ─────────────
   useEffect(() => {
@@ -58,23 +63,21 @@ const CameraController = () => {
       if (cameraMode !== CAMERA_FREE_MODE) return;
       if (e.button !== 0) return;
 
-      isDragging.current = true;
+      dragStart.current = { x: e.clientX, y: e.clientY };
+      hasDragged.current = false;
 
       yaw.current = camera.rotation.y;
       pitch.current = camera.rotation.x;
-
-      gl.domElement.requestPointerLock();
-
-      if (DEBUG) console.log('[CAMERA] drag START + pointer lock');
     };
 
     const onMouseUp = () => {
-      if (isDragging.current && DEBUG) {
-        console.log('[CAMERA] drag END + release pointer lock');
-      }
-
       isDragging.current = false;
-      document.exitPointerLock();
+      dragStart.current = null;
+
+      if (document.pointerLockElement === gl.domElement) {
+        document.exitPointerLock();
+        if (DEBUG) console.log('[CAMERA] pointer lock DISABLED');
+      }
     };
 
     dom.addEventListener('mousedown', onMouseDown);
@@ -92,24 +95,35 @@ const CameraController = () => {
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       if (cameraMode !== CAMERA_FREE_MODE) return;
-      if (!isDragging.current) return;
-      if (document.pointerLockElement !== gl.domElement) return;
+      if (!dragStart.current) return;
 
-      yaw.current -= e.movementX * SENSITIVITY;
-      pitch.current -= e.movementY * SENSITIVITY;
+      const dx =
+        document.pointerLockElement === gl.domElement
+          ? e.movementX
+          : e.clientX - dragStart.current.x;
 
+      const dy =
+        document.pointerLockElement === gl.domElement
+          ? e.movementY
+          : e.clientY - dragStart.current.y;
+
+      if (!isDragging.current) {
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < DRAG_THRESHOLD) return;
+
+        isDragging.current = true;
+        gl.domElement.requestPointerLock();
+      }
+
+      yaw.current -= dx * SENSITIVITY;
+      pitch.current -= dy * SENSITIVITY;
       pitch.current = Math.max(-MAX_PITCH, Math.min(MAX_PITCH, pitch.current));
 
       camera.rotation.order = 'YXZ';
       camera.rotation.y = yaw.current;
       camera.rotation.x = pitch.current;
 
-      if (DEBUG) {
-        console.log('[CAMERA] rotate', {
-          yaw: yaw.current.toFixed(2),
-          pitch: pitch.current.toFixed(2),
-        });
-      }
+      dragStart.current = { x: e.clientX, y: e.clientY };
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -140,7 +154,6 @@ const CameraController = () => {
   // ───────────── Movement (FREE) ─────────────
   useFrame((_, delta) => {
     if (cameraMode !== CAMERA_FREE_MODE) return;
-    if (!isDragging.current) return;
 
     const speed =
       moveSpeed.current *
@@ -157,8 +170,6 @@ const CameraController = () => {
 
     dir.normalize().applyQuaternion(camera.quaternion);
     camera.position.addScaledVector(dir, speed);
-
-    if (DEBUG) console.log('[CAMERA] move');
   });
 
   // ───────── ORBIT FOLLOW TARGET ─────────

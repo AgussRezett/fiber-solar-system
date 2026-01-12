@@ -11,6 +11,7 @@ import {
 } from '../../visuals/celestialVisuals';
 import { useTexture } from '@react-three/drei';
 import { useCameraStore } from '../../store/useCameraStore';
+import OrbitPath from './OrbitPath';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -76,6 +77,13 @@ const CelestialBody = ({ data, children }: Props) => {
   return (
     <group ref={orbitRef}>
       <axesHelper args={[5]} />
+      {data.orbit && (
+        <OrbitPath
+          radius={orbitRadius}
+          inclinationDeg={data.orbit.inclinationDeg}
+          color="white"
+        />
+      )}
       <group ref={bodyRef} position={[orbitRadius, 0, 0]}>
         <mesh
           ref={meshRef}

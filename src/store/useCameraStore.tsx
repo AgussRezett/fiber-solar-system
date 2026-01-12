@@ -10,7 +10,6 @@ interface CameraStore {
   setCameraMode: (mode: string) => void;
 
   focusTarget: THREE.Object3D | null;
-  transitionTarget: THREE.Object3D | null;
 
   startOrbitById: (id: string) => void;
 
@@ -23,7 +22,6 @@ export const useCameraStore = create<CameraStore>((set, get) => ({
   setCameraMode: (mode) => set({ cameraMode: mode }),
 
   focusTarget: null,
-  transitionTarget: null,
 
   registry: {},
 
@@ -37,7 +35,7 @@ export const useCameraStore = create<CameraStore>((set, get) => ({
     if (!obj) return;
 
     set({
-      transitionTarget: obj,
+      focusTarget: obj,
       cameraMode: CAMERA_TRANSITION_MODE,
     });
   },

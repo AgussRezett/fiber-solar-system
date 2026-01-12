@@ -12,6 +12,8 @@ import {
 import { useTexture } from '@react-three/drei';
 import { useCameraStore } from '../../store/useCameraStore';
 import OrbitPath from './OrbitPath';
+import PlanetRings from './PlanetRings';
+import Atmosphere from './Atmosphere';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -74,6 +76,13 @@ const CelestialBody = ({ data, children }: Props) => {
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const radiusUnits = data.radiusKm * RADIUS_KM_TO_UNITS;
+  const features = visuals.features;
+
+  const axialTilt = data.rotation?.axialTiltDeg
+    ? THREE.MathUtils.degToRad(data.rotation.axialTiltDeg)
+    : 0;
+
   return (
     <group ref={orbitRef}>
       <axesHelper args={[5]} />
@@ -85,15 +94,17 @@ const CelestialBody = ({ data, children }: Props) => {
         />
       )}
       <group ref={bodyRef} position={[orbitRadius, 0, 0]}>
+        {features?.rings && (
+          <group rotation={[0, 0, axialTilt]}>
+            <PlanetRings radius={radiusUnits} {...features.rings} />
+          </group>
+        )}
+        {features?.atmosphere && (
+          <Atmosphere radius={radiusUnits} {...features.atmosphere} />
+        )}
         <mesh
           ref={meshRef}
-          rotation={[
-            0,
-            0,
-            data.rotation?.axialTiltDeg
-              ? THREE.MathUtils.degToRad(data.rotation.axialTiltDeg)
-              : 0,
-          ]}
+          rotation={[0, 0, axialTilt]}
           castShadow
           receiveShadow
           onClick={(e) => {

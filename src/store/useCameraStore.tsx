@@ -1,13 +1,18 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
-import { CAMERA_FREE_MODE, CAMERA_ORBIT_MODE } from '../types/cameraModes.type';
+import {
+  CAMERA_FREE_MODE,
+  CAMERA_TRANSITION_MODE,
+} from '../types/cameraModes.type';
 
 interface CameraStore {
   cameraMode: string;
   setCameraMode: (mode: string) => void;
 
   focusTarget: THREE.Object3D | null;
-  focusById?: (id: string) => void;
+  transitionTarget: THREE.Object3D | null;
+
+  startOrbitById: (id: string) => void;
 
   registry: Record<string, THREE.Object3D>;
   registerBody: (id: string, obj: THREE.Object3D) => void;
@@ -18,19 +23,22 @@ export const useCameraStore = create<CameraStore>((set, get) => ({
   setCameraMode: (mode) => set({ cameraMode: mode }),
 
   focusTarget: null,
+  transitionTarget: null,
 
   registry: {},
+
   registerBody: (id, obj) =>
     set((s) => ({
       registry: { ...s.registry, [id]: obj },
     })),
 
-  focusById: (id: string) => {
+  startOrbitById: (id: string) => {
     const obj = get().registry[id];
     if (!obj) return;
+
     set({
-      focusTarget: obj,
-      cameraMode: CAMERA_ORBIT_MODE,
+      transitionTarget: obj,
+      cameraMode: CAMERA_TRANSITION_MODE,
     });
   },
 }));

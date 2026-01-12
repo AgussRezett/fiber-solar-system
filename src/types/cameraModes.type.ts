@@ -1,3 +1,4 @@
-export type CameraMode = 'FREE' | 'ORBIT';
+export type CameraMode = 'FREE' | 'ORBIT' | 'CAMERA_TRANSITION_MODE';
 export const CAMERA_FREE_MODE = 'FREE';
 export const CAMERA_ORBIT_MODE = 'ORBIT';
+export const CAMERA_TRANSITION_MODE = 'CAMERA_TRANSITION_MODE';

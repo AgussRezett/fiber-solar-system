@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import {
   CAMERA_FREE_MODE,
   CAMERA_ORBIT_MODE,
+  CAMERA_TRANSITION_MODE,
 } from '../../types/cameraModes.type';
 import { useCameraStore } from '../../store/useCameraStore';
 
@@ -19,7 +20,8 @@ const DEBUG = false;
 
 const CameraController = () => {
   const { camera, gl } = useThree();
-  const { cameraMode, setCameraMode, focusTarget } = useCameraStore();
+  const { cameraMode, setCameraMode, focusTarget, transitionTarget } =
+    useCameraStore();
 
   const keys = useRef<Record<string, boolean>>({});
   const isDragging = useRef(false);
@@ -152,6 +154,63 @@ const CameraController = () => {
   }, [cameraMode]);
 
   // ───────────── Movement (FREE) ─────────────
+  const startOrbitTransition = (target: THREE.Object3D) => {
+    const targetPos = new THREE.Vector3();
+    target.getWorldPosition(targetPos);
+
+    // ── tamaño real del cuerpo
+    const box = new THREE.Box3().setFromObject(target);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const radius = Math.max(size.x, size.y, size.z) * 0.5;
+
+    // ── distancia final correcta (la que ya validamos)
+    const computeOrbitDistance = (r: number) => {
+      const MIN = 6;
+      const SCALE = 24;
+      return MIN + Math.log(r + 1) * SCALE;
+    };
+
+    const distance = computeOrbitDistance(radius);
+
+    // ── dirección actual de la cámara → estable y natural
+    const direction = new THREE.Vector3()
+      .subVectors(camera.position, targetPos)
+      .normalize();
+
+    // fallback por seguridad
+    if (direction.lengthSq() === 0) {
+      direction.set(0, 0, 1);
+    }
+
+    // ── POSICIÓN FINAL REAL DE ÓRBITA
+    const endPos = targetPos.clone().add(direction.multiplyScalar(distance));
+
+    // ── orientación final correcta
+    const dummy = new THREE.Object3D();
+    dummy.position.copy(endPos);
+    dummy.lookAt(targetPos);
+    dummy.updateMatrixWorld();
+
+    transition.current = {
+      startPos: camera.position.clone(),
+      startQuat: camera.quaternion.clone(),
+      endPos,
+      endQuat: dummy.quaternion.clone(),
+      progress: 0,
+    };
+
+    setCameraMode(CAMERA_TRANSITION_MODE);
+  };
+
+  useEffect(() => {
+    if (cameraMode === CAMERA_TRANSITION_MODE && transitionTarget) {
+      startOrbitTransition(transitionTarget);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cameraMode, transitionTarget]);
+
+  // ───────────── Movement (FREE) ─────────────
   useFrame((_, delta) => {
     if (cameraMode !== CAMERA_FREE_MODE) return;
 
@@ -170,6 +229,41 @@ const CameraController = () => {
 
     dir.normalize().applyQuaternion(camera.quaternion);
     camera.position.addScaledVector(dir, speed);
+  });
+
+  // ───────────── Movement (TRANSITION) ─────────────
+  const transition = useRef<{
+    startPos: THREE.Vector3;
+    startQuat: THREE.Quaternion;
+    endPos: THREE.Vector3;
+    endQuat: THREE.Quaternion;
+    progress: number;
+  }>({
+    startPos: new THREE.Vector3(),
+    startQuat: new THREE.Quaternion(),
+    endPos: new THREE.Vector3(),
+    endQuat: new THREE.Quaternion(),
+    progress: 0,
+  });
+
+  useFrame((_, delta) => {
+    if (cameraMode !== CAMERA_TRANSITION_MODE) return;
+
+    const t = transition.current;
+    t.progress = Math.min(t.progress + delta * 1.5, 1);
+
+    const eased = t.progress * t.progress * (3 - 2 * t.progress); // smoothstep
+
+    camera.position.lerpVectors(t.startPos, t.endPos, eased);
+    camera.quaternion.slerpQuaternions(t.startQuat, t.endQuat, eased);
+
+    if (t.progress === 1) {
+      useCameraStore.setState({
+        focusTarget: transitionTarget,
+        transitionTarget: null,
+        cameraMode: CAMERA_ORBIT_MODE,
+      });
+    }
   });
 
   // ───────── ORBIT FOLLOW TARGET ─────────

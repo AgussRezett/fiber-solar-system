@@ -23,7 +23,7 @@ const CelestialBody = ({ data, children }: Props) => {
   const bodyRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
 
-  const { focusById, registerBody } = useCameraStore();
+  const { startOrbitById, registerBody } = useCameraStore();
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -99,7 +99,7 @@ const CelestialBody = ({ data, children }: Props) => {
           onClick={(e) => {
             e.stopPropagation();
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            focusById && focusById(data.id);
+            startOrbitById && startOrbitById(data.id);
           }}
           onPointerEnter={(event) => (
             event.stopPropagation(),

@@ -2,7 +2,7 @@ import { useHelper } from '@react-three/drei';
 import { useRef } from 'react';
 import { DirectionalLight, DirectionalLightHelper } from 'three';
 import SolarSystem from './components/systems/SolarSystem';
-import CameraController from './components/effects/CameraController';
+import CameraController from './components/camera/CameraController';
 import GalaxyBackground from './scenes/GalaxyBackground';
 import AnimatedStars from './components/effects/AnimatedStars';
 

@@ -1,4 +1,4 @@
-import { OrbitControls } from '@react-three/drei';
+import { TrackballControls } from '@react-three/drei';
 import { useRef } from 'react';
 import { CAMERA_ORBIT_MODE } from '../../types/cameraModes.type';
 import { useCameraStore } from '../../store/useCameraStore';
@@ -18,11 +18,12 @@ const CameraController = () => {
   return (
     <>
       {cameraMode === CAMERA_ORBIT_MODE && focusTarget && (
-        <OrbitControls
+        <TrackballControls
           ref={controlsRef}
-          enablePan={false}
-          enableDamping
-          dampingFactor={0.1}
+          noPan
+          staticMoving
+          rotateSpeed={rotateSpeed}
+          zoomSpeed={zoomSpeed}
         />
       )}
     </>

@@ -1,6 +1,6 @@
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
 import celestialObjects from '../../data/solarSystem.json';
-import CelestialBody from '../objects/CelestialBody';
+import CelestialBody from '../objects/Celestial/CelestialBody';
 
 const SolarSystem = () => {
   const childrenMap: Record<string, CelestialBodyInterface[]> = {};

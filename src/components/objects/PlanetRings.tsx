@@ -39,10 +39,10 @@ const PlanetRings = ({
 
       const r = Math.sqrt(x * x + y * y);
 
-      // 🔥 SOLO radio → U
+      // SOLO radio -> U
       const u = (r - innerRadius) / (outerRadius - innerRadius);
 
-      // 🔥 V constante
+      // V constante
       uv.setXY(i, u, 0.5);
     }
 

@@ -54,7 +54,23 @@ export const CELESTIAL_VISUALS = {
   PL_VENUS: {
     material: 'phong',
     map: '/assets/venus/map.jpg',
+    displacementMap: '/assets/venus/displacement.jpg',
+    displacementScale: 0.15,
     shininess: 30,
+    features: {
+      clouds: {
+        map: '/assets/venus/atmosphere.jpg',
+        opacity: 0.1,
+        speed: 0.01,
+        scale: 1.09,
+      },
+      atmosphere: {
+        color: '#ffd2a1',
+        opacity: 0.5,
+        scale: 1.1,
+        intensity: 0.05,
+      },
+    },
   },
   PL_EARTH: {
     material: 'phong',
@@ -71,11 +87,11 @@ export const CELESTIAL_VISUALS = {
         speed: 0.01,
         scale: 1.01,
       },
-
       atmosphere: {
         color: '#6fb7ff',
-        opacity: 0.25,
-        scale: 1.03,
+        opacity: 0.5,
+        scale: 1.04,
+        intensity: 0.6,
       },
     },
   },
@@ -89,18 +105,42 @@ export const CELESTIAL_VISUALS = {
   PL_MARS: {
     material: 'phong',
     map: '/assets/mars/map.jpg',
+    normalMap: '/assets/mars/normal.jpg',
+    displacementMap: '/assets/mars/displacement.jpg',
+    displacementScale: 0.15,
     shininess: 30,
+    features: {
+      atmosphere: {
+        color: '#c98a6a',
+        opacity: 0.12,
+        scale: 1.02,
+      },
+    },
   },
   PL_JUPITER: {
     material: 'phong',
     map: '/assets/jupiter/map.jpg',
     shininess: 30,
+    features: {
+      atmosphere: {
+        color: '#f2e7d5',
+        opacity: 0.25,
+        scale: 1.02,
+        intensity: 0.02,
+      },
+    },
   },
   PL_SATURN: {
     material: 'phong',
     map: '/assets/saturn/map.jpg',
     shininess: 30,
     features: {
+      atmosphere: {
+        color: '#efe4c8',
+        opacity: 0.22,
+        scale: 1.02,
+        intensity: 0.02,
+      },
       rings: {
         innerRadiusMultiplier: 1.3,
         outerRadiusMultiplier: 2.3,
@@ -114,20 +154,34 @@ export const CELESTIAL_VISUALS = {
     material: 'phong',
     map: '/assets/uranus/map.jpg',
     shininess: 30,
-    /*     features: {
+    features: {
+      atmosphere: {
+        color: '#9fd9d9',
+        opacity: 0.35,
+        scale: 1.04,
+        intensity: 0.02,
+      },
       rings: {
         innerRadiusMultiplier: 1.2,
         outerRadiusMultiplier: 1.8,
-        colorMap: '/assets/uranus/rings_color.png',
-        alphaMap: '/assets/uranus/rings_alpha.png',
+        colorMap: '/assets/uranus/rings_color.jpg',
+        alphaMap: '/assets/uranus/rings_alpha.gif',
         opacity: 0.6,
       },
-    }, */
+    },
   },
   PL_NEPTUNE: {
     material: 'phong',
     map: '/assets/neptune/map.jpg',
     shininess: 30,
+    features: {
+      atmosphere: {
+        color: '#4f7dff',
+        opacity: 0.4,
+        scale: 1.04,
+        intensity: 0.1,
+      },
+    },
   },
 };
 

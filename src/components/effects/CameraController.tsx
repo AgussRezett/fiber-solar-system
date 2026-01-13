@@ -180,7 +180,6 @@ const CameraController = () => {
 
     const endPos = targetPos.clone().add(direction.multiplyScalar(distance));
 
-    // 🧠 ROTACIÓN FINAL (sin aplicarla)
     const dummyCam = camera.clone();
     dummyCam.position.copy(endPos);
     dummyCam.lookAt(targetPos);
@@ -280,7 +279,6 @@ const CameraController = () => {
       {cameraMode === CAMERA_ORBIT_MODE && focusTarget && (
         <OrbitControls
           ref={controlsRef}
-          args={[camera, gl.domElement]}
           enablePan={false}
           enableDamping
           dampingFactor={0.1}

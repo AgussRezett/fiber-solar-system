@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
 import type { CelestialBodyInterface } from '../../types/celestialBody.type';
@@ -24,8 +24,11 @@ const CelestialBody = ({ data, children }: Props) => {
   const orbitRef = useRef<Group>(null);
   const bodyRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
-
   const cloudRef = useRef<Group>(null);
+
+  // hover animation refs
+  const hoverTarget = useRef(0); // 0 -> off, 1 -> hover
+  const hoverValue = useRef(0);
 
   const { startOrbitById, registerBody } = useCameraStore();
 
@@ -50,7 +53,7 @@ const CelestialBody = ({ data, children }: Props) => {
 
   const textures = useTexture(
     Object.fromEntries(
-      Object.entries(rawTexture).filter(([, value]) => value !== undefined)
+      Object.entries(rawTexture).filter(([, v]) => v !== undefined)
     ) as Record<string, string>
   );
 
@@ -63,26 +66,10 @@ const CelestialBody = ({ data, children }: Props) => {
     ? (2 * Math.PI) / data.orbit.periodDays
     : 0;
 
-  // rotación propia
+  // rotación
   const rotationSpeed = data.rotation?.periodHours
     ? (2 * Math.PI) / data.rotation.periodHours
     : 0;
-
-  useFrame((_, delta) => {
-    if (orbitRef.current) {
-      orbitRef.current.rotation.y += orbitSpeed * delta * 0.1;
-      //orbitRef.current.rotation.y += 0.002;
-    }
-    if (meshRef.current) {
-      meshRef.current.rotation.y += rotationSpeed * delta;
-    }
-
-    if (cloudRef.current && features?.clouds) {
-      cloudRef.current.rotation.y += rotationSpeed * delta;
-    }
-  });
-
-  const [isHovered, setIsHovered] = useState(false);
 
   const radiusUnits = data.radiusKm * RADIUS_KM_TO_UNITS;
 
@@ -95,9 +82,42 @@ const CelestialBody = ({ data, children }: Props) => {
       useTexture(features.clouds.map)
     : null;
 
+  useFrame((_, delta) => {
+    // órbita
+    if (orbitRef.current) {
+      orbitRef.current.rotation.y += orbitSpeed * delta * 0.1;
+    }
+
+    // rotación planeta
+    if (meshRef.current) {
+      meshRef.current.rotation.y += rotationSpeed * delta;
+    }
+
+    // rotación nubes
+    if (cloudRef.current && features?.clouds) {
+      cloudRef.current.rotation.y += rotationSpeed * delta;
+    }
+
+    // ===== Hover ease-in-out =====
+    const speed = 4;
+    hoverValue.current +=
+      (hoverTarget.current - hoverValue.current) * delta * speed;
+
+    // ease-in-out senoidal
+    const eased = 0.5 - 0.5 * Math.cos(Math.PI * hoverValue.current);
+
+    if (meshRef.current) {
+      const mat = meshRef.current.material as THREE.MeshPhongMaterial;
+
+      mat.emissive.set('#ffffff');
+      mat.emissiveIntensity = eased * 0.15;
+
+      mat.shininess = (visuals.shininess ?? 30) + eased * 40;
+    }
+  });
+
   return (
     <group ref={orbitRef}>
-      <axesHelper args={[5]} />
       {data.orbit && (
         <OrbitPath
           radius={orbitRadius}
@@ -105,20 +125,18 @@ const CelestialBody = ({ data, children }: Props) => {
           color="white"
         />
       )}
+
       <group ref={bodyRef} position={[orbitRadius, 0, 0]}>
         {features?.rings && (
           <group rotation={[0, 0, axialTilt]}>
             <PlanetRings radius={radiusUnits} {...features.rings} />
           </group>
         )}
+
         {features?.atmosphere && (
-          <Atmosphere
-            radius={radiusUnits}
-            {...features.atmosphere}
-            normalMap={textures.displacementMap}
-            normalScale={0.1}
-          />
+          <Atmosphere radius={radiusUnits} {...features.atmosphere} />
         )}
+
         {features?.clouds && cloudTexture && (
           <group ref={cloudRef} rotation={[0, 0, axialTilt]}>
             <mesh>
@@ -126,16 +144,16 @@ const CelestialBody = ({ data, children }: Props) => {
                 args={[radiusUnits * (features.clouds.scale ?? 1.01), 96, 96]}
               />
               <meshPhongMaterial
-                normalMap={textures.normalMap}
-                normalScale={new THREE.Vector2(0.2, 0.2)}
                 map={cloudTexture}
                 transparent
                 opacity={features.clouds.opacity}
                 depthWrite={false}
                 side={THREE.DoubleSide}
+                normalMap={textures.normalMap}
+                normalScale={new THREE.Vector2(0.2, 0.2)}
                 displacementMap={textures.displacementMap}
                 displacementScale={
-                  radiusUnits * ((visuals?.displacementScale ?? 0) * 0.1)
+                  radiusUnits * ((visuals.displacementScale ?? 0) * 0.1)
                 }
                 shininess={5}
               />
@@ -150,39 +168,27 @@ const CelestialBody = ({ data, children }: Props) => {
           receiveShadow
           onClick={(e) => {
             e.stopPropagation();
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            startOrbitById && startOrbitById(data.id);
+            startOrbitById?.(data.id);
           }}
-          onPointerEnter={(event) => (
-            event.stopPropagation(),
-            setIsHovered(true),
-            (document.body.style.cursor = 'pointer')
-          )}
-          onPointerLeave={() => (
-            setIsHovered(false),
-            (document.body.style.cursor = 'default')
-          )}
+          onPointerEnter={(e) => {
+            e.stopPropagation();
+            hoverTarget.current = 1;
+            document.body.style.cursor = 'pointer';
+          }}
+          onPointerLeave={() => {
+            hoverTarget.current = 0;
+            document.body.style.cursor = 'default';
+          }}
         >
-          <sphereGeometry args={[data.radiusKm * RADIUS_KM_TO_UNITS, 32, 32]} />
-          {visuals.material === 'basic' ? (
-            <meshStandardMaterial
-              {...textures}
-              emissive={visuals.emissive ? new THREE.Color('red') : undefined}
-              emissiveIntensity={isHovered ? 0.6 : 0}
-            />
-          ) : (
-            <meshPhongMaterial
-              {...textures}
-              displacementScale={visuals.displacementScale ?? 0}
-              emissive={
-                isHovered
-                  ? new THREE.Color('#ffffff')
-                  : new THREE.Color('#000000')
-              }
-              shininess={isHovered ? 80 : visuals.shininess}
-            />
-          )}
+          <sphereGeometry args={[radiusUnits, 32, 32]} />
+
+          <meshPhongMaterial
+            {...textures}
+            displacementScale={visuals.displacementScale ?? 0}
+            shininess={visuals.shininess ?? 30}
+          />
         </mesh>
+
         {children}
       </group>
     </group>

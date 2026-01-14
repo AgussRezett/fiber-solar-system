@@ -91,6 +91,8 @@ const CelestialBody = ({ data, children }: Props) => {
           radius={orbitRadius}
           inclinationDeg={data.orbit.inclinationDeg}
           color={data.color || '#ffffff'}
+          planetRadius={radius}
+          planetRef={bodyRef}
         />
       )}
 

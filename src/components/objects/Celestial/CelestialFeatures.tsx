@@ -14,8 +14,6 @@ type Props = {
   displacementScale: number;
 };
 
-// We create a new component for Clouds to avoid conditional hook calls.
-
 const CelestialFeatures = ({
   features,
   radius,

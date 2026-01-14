@@ -1,11 +1,15 @@
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
+import { useRef, type RefObject } from 'react';
+import useOrbitPathOpacity from '../hooks/useOrbitPathOpacity';
 
 interface OrbitPathProps {
   radius: number;
   segments?: number;
   color?: string;
   inclinationDeg?: number;
+  planetRadius: number;
+  planetRef: RefObject<THREE.Group | null>;
 }
 
 const OrbitPath = ({
@@ -13,9 +17,12 @@ const OrbitPath = ({
   segments = 128,
   color = '#ffffff',
   inclinationDeg = 0,
+  planetRadius,
+  planetRef,
 }: OrbitPathProps) => {
-  const points: THREE.Vector3[] = [];
+  const lineRef = useRef<THREE.Line>(null);
 
+  const points: THREE.Vector3[] = [];
   for (let i = 0; i <= segments; i++) {
     const theta = (i / segments) * Math.PI * 2;
     points.push(
@@ -23,19 +30,18 @@ const OrbitPath = ({
     );
   }
 
-  // Convertir color hex a rgba con transparencia
-  const hexToRgba = (hex: string, alpha: number = 0.4): string => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  };
-
-  const orbitColor = color.startsWith('#') ? hexToRgba(color, 0.5) : color;
+  useOrbitPathOpacity(planetRadius, planetRef, lineRef);
 
   return (
     <group rotation={[THREE.MathUtils.degToRad(inclinationDeg), 0, 0]}>
-      <Line points={points} color={orbitColor} lineWidth={1.5} dashed={false} />
+      <Line
+        ref={lineRef}
+        points={points}
+        color={color}
+        lineWidth={1.5}
+        transparent
+        opacity={0}
+      />
     </group>
   );
 };

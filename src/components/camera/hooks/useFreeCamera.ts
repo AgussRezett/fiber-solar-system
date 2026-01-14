@@ -2,16 +2,9 @@ import { useEffect, useRef } from 'react';
 import { CAMERA_FREE_MODE } from '../../../types/cameraModes.type';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import {
-  BASE_MOVE_SPEED,
-  DRAG_THRESHOLD,
-  FAST_MULTIPLIER,
-  MAX_PITCH,
-  MAX_SPEED,
-  MIN_SPEED,
-  SENSITIVITY,
-} from '../consts/camera.constants';
+import { BASE_MOVE_SPEED } from '../consts/camera.constants';
 import { useCameraStore } from '../../../store/useCameraStore';
+import { useCameraSettingsStore } from '../../../store/useCameraSettingsStore';
 
 export const useFreeCamera = () => {
   const { camera, gl } = useThree();
@@ -27,6 +20,19 @@ export const useFreeCamera = () => {
   const hasDragged = useRef(false);
 
   const { cameraMode, setCameraMode } = useCameraStore();
+  const {
+    baseMoveSpeed,
+    fastMultiplier,
+    sensitivity,
+    maxPitch,
+    minSpeed,
+    maxSpeed,
+    dragThreshold,
+  } = useCameraSettingsStore();
+
+  useEffect(() => {
+    moveSpeed.current = baseMoveSpeed;
+  }, [baseMoveSpeed]);
 
   // ───────────── Keyboard ─────────────
   useEffect(() => {
@@ -45,7 +51,7 @@ export const useFreeCamera = () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
     };
-  }, [setCameraMode]);
+  }, [setCameraMode, fastMultiplier]);
 
   // ───────────── Pointer drag ─────────────
   useEffect(() => {
@@ -100,15 +106,15 @@ export const useFreeCamera = () => {
 
       if (!isDragging.current) {
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < DRAG_THRESHOLD) return;
+        if (dist < dragThreshold) return;
 
         isDragging.current = true;
         gl.domElement.requestPointerLock();
       }
 
-      yaw.current -= dx * SENSITIVITY;
-      pitch.current -= dy * SENSITIVITY;
-      pitch.current = Math.max(-MAX_PITCH, Math.min(MAX_PITCH, pitch.current));
+      yaw.current -= dx * sensitivity;
+      pitch.current -= dy * sensitivity;
+      pitch.current = Math.max(-maxPitch, Math.min(maxPitch, pitch.current));
 
       camera.rotation.order = 'YXZ';
       camera.rotation.y = yaw.current;
@@ -119,7 +125,7 @@ export const useFreeCamera = () => {
 
     window.addEventListener('mousemove', onMouseMove);
     return () => window.removeEventListener('mousemove', onMouseMove);
-  }, [cameraMode, camera, gl.domElement]);
+  }, [cameraMode, camera, gl.domElement, sensitivity, maxPitch, dragThreshold]);
 
   // ───────────── Scroll → velocidad ─────────────
   useEffect(() => {
@@ -129,23 +135,21 @@ export const useFreeCamera = () => {
 
       moveSpeed.current += e.deltaY * -0.1;
       moveSpeed.current = Math.max(
-        MIN_SPEED,
-        Math.min(MAX_SPEED, moveSpeed.current)
+        minSpeed,
+        Math.min(maxSpeed, moveSpeed.current)
       );
     };
 
     window.addEventListener('wheel', onWheel, { passive: true });
     return () => window.removeEventListener('wheel', onWheel);
-  }, [cameraMode]);
+  }, [cameraMode, minSpeed, maxSpeed]);
 
   // ───────────── Movement (FREE) ─────────────
   useFrame((_, delta) => {
     if (cameraMode !== CAMERA_FREE_MODE) return;
 
     const speed =
-      moveSpeed.current *
-      (keys.current.ShiftLeft ? FAST_MULTIPLIER : 1) *
-      delta;
+      moveSpeed.current * (keys.current.ShiftLeft ? fastMultiplier : 1) * delta;
 
     const dir = new THREE.Vector3(
       (keys.current.KeyD ? 1 : 0) - (keys.current.KeyA ? 1 : 0),

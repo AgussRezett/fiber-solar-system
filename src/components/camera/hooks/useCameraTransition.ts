@@ -6,6 +6,7 @@ import {
 } from '../../../types/cameraModes.type';
 import { useEffect, useRef } from 'react';
 import { useCameraStore } from '../../../store/useCameraStore';
+import { useCameraSettingsStore } from '../../../store/useCameraSettingsStore';
 
 export const useCameraTransition = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,6 +14,7 @@ export const useCameraTransition = (
 ) => {
   const { camera } = useThree();
   const { cameraMode, focusTarget, setCameraMode } = useCameraStore();
+  const { transitionSpeed } = useCameraSettingsStore();
 
   const startOrbitTransition = (target: THREE.Object3D) => {
     const targetPos = new THREE.Vector3();
@@ -62,7 +64,7 @@ export const useCameraTransition = (
 
     startOrbitTransition(focusTarget);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraMode, focusTarget]);
+  }, [cameraMode, focusTarget, transitionSpeed]);
 
   // ───────────── Movement (TRANSITION) ─────────────
   const transition = useRef<{
@@ -79,7 +81,7 @@ export const useCameraTransition = (
 
     const t = transition.current;
 
-    t.progress = Math.min(t.progress + delta * 1.5, 1);
+    t.progress = Math.min(t.progress + delta * transitionSpeed, 1);
 
     const eased = t.progress * t.progress * (3 - 2 * t.progress); // smoothstep
 
@@ -99,12 +101,4 @@ export const useCameraTransition = (
       setCameraMode(CAMERA_ORBIT_MODE);
     }
   });
-
-  useEffect(() => {
-    if (cameraMode !== CAMERA_TRANSITION_MODE) return;
-    if (!focusTarget) return;
-
-    startOrbitTransition(focusTarget);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraMode, focusTarget]);
 };

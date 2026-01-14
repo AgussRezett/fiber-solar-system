@@ -5,11 +5,13 @@ import { useCameraStore } from '../../store/useCameraStore';
 import { useFreeCamera } from './hooks/useFreeCamera';
 import { useCameraTransition } from './hooks/useCameraTransition';
 import { useOrbitFollow } from './hooks/useOrbitFollow';
+import { useCameraSettingsStore } from '../../store/useCameraSettingsStore';
 
 const CameraController = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null);
   const { cameraMode, focusTarget } = useCameraStore();
+  const { rotateSpeed, zoomSpeed } = useCameraSettingsStore();
 
   useFreeCamera();
   useCameraTransition(controlsRef);

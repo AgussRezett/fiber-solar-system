@@ -2,6 +2,8 @@
   {
     "id": "SOL_001",
     "type": "star",
+    "name": "Sol",
+    "color": "#FFD700",
     "radiusKm": 69634,
     "rotation": {
       "periodHours": 609.12,
@@ -11,6 +13,8 @@
   {
     "id": "PL_MERCURY",
     "type": "planet",
+    "name": "Mercurio",
+    "color": "#8C7853",
     "parentId": "SOL_001",
     "radiusKm": 2439.7,
     "orbit": {
@@ -26,6 +30,8 @@
   {
     "id": "PL_VENUS",
     "type": "planet",
+    "name": "Venus",
+    "color": "#FFC649",
     "parentId": "SOL_001",
     "radiusKm": 6051.8,
     "orbit": {
@@ -41,6 +47,8 @@
   {
     "id": "PL_EARTH",
     "type": "planet",
+    "name": "Tierra",
+    "color": "#4A90E2",
     "parentId": "SOL_001",
     "radiusKm": 6371,
     "orbit": {
@@ -56,6 +64,8 @@
   {
     "id": "MO_MOON",
     "type": "satellite",
+    "name": "Luna",
+    "color": "#C0C0C0",
     "parentId": "PL_EARTH",
     "radiusKm": 1737.4,
     "orbit": {
@@ -71,6 +81,8 @@
   {
     "id": "PL_MARS",
     "type": "planet",
+    "name": "Marte",
+    "color": "#CD5C5C",
     "parentId": "SOL_001",
     "radiusKm": 3389.5,
     "orbit": {
@@ -86,6 +98,8 @@
   {
     "id": "MO_PHOBOS",
     "type": "satellite",
+    "name": "Fobos",
+    "color": "#8B7355",
     "parentId": "PL_MARS",
     "radiusKm": 11.27,
     "orbit": {
@@ -101,6 +115,8 @@
   {
     "id": "PL_JUPITER",
     "type": "planet",
+    "name": "Júpiter",
+    "color": "#D8CA9D",
     "parentId": "SOL_001",
     "radiusKm": 69911,
     "orbit": {
@@ -116,6 +132,8 @@
   {
     "id": "MO_IO",
     "type": "satellite",
+    "name": "Ío",
+    "color": "#F4A460",
     "parentId": "PL_JUPITER",
     "radiusKm": 1821.6,
     "orbit": {
@@ -131,6 +149,8 @@
   {
     "id": "PL_SATURN",
     "type": "planet",
+    "name": "Saturno",
+    "color": "#FAD5A5",
     "parentId": "SOL_001",
     "radiusKm": 58232,
     "orbit": {
@@ -146,6 +166,8 @@
   {
     "id": "PL_URANUS",
     "type": "planet",
+    "name": "Urano",
+    "color": "#4FD0E7",
     "parentId": "SOL_001",
     "radiusKm": 25362,
     "orbit": {
@@ -161,6 +183,8 @@
   {
     "id": "PL_NEPTUNE",
     "type": "planet",
+    "name": "Neptuno",
+    "color": "#4166F5",
     "parentId": "SOL_001",
     "radiusKm": 24622,
     "orbit": {

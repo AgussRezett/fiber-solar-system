@@ -11,7 +11,7 @@ interface OrbitPathProps {
 const OrbitPath = ({
   radius,
   segments = 128,
-  color = '#ffffff33',
+  color = '#ffffff',
   inclinationDeg = 0,
 }: OrbitPathProps) => {
   const points: THREE.Vector3[] = [];
@@ -23,9 +23,19 @@ const OrbitPath = ({
     );
   }
 
+  // Convertir color hex a rgba con transparencia
+  const hexToRgba = (hex: string, alpha: number = 0.4): string => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
+  const orbitColor = color.startsWith('#') ? hexToRgba(color, 0.5) : color;
+
   return (
     <group rotation={[THREE.MathUtils.degToRad(inclinationDeg), 0, 0]}>
-      <Line points={points} color={color} lineWidth={1} dashed={false} />
+      <Line points={points} color={orbitColor} lineWidth={1.5} dashed={false} />
     </group>
   );
 };

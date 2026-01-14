@@ -1,24 +1,43 @@
-import style from './CameraHud.module.css';
+import styles from './CameraHud.module.css';
 import { useCameraStore } from '../../../store/useCameraStore';
 import { CAMERA_FREE_MODE } from '../../../types/cameraModes.type';
+import PlanetNavigation from '../PlanetNavigation/PlanetNavigation';
+import CameraSettings from '../CameraSettings/CameraSettings';
 
 const CameraHud = () => {
-  const { cameraMode, setCameraMode, startOrbitById } = useCameraStore();
+  const { cameraMode, setCameraMode } = useCameraStore();
 
   return (
-    <div className={style.hudContainer}>
-      <div className={style.cameraChip}>
-        CAM: {cameraMode === CAMERA_FREE_MODE ? 'FREE' : 'ORBIT'}
+    <div className={styles.hudContainer}>
+      {/* Status indicator - top left */}
+      <div className={styles.statusChip}>
+        <span className={styles.statusLabel}>MODO:</span>
+        <span className={styles.statusValue}>
+          {cameraMode === CAMERA_FREE_MODE ? 'LIBRE' : 'ÓRBITA'}
+        </span>
       </div>
 
-      <button onClick={() => startOrbitById?.('SOL_001')}>Ir al Sol</button>
-      <button onClick={() => startOrbitById?.('PL_EARTH')}>
-        Ir a la Tierra
-      </button>
+      {/* Navigation panel - left side */}
+      <div className={styles.leftPanel}>
+        <PlanetNavigation />
+      </div>
 
-      <button onClick={() => setCameraMode(CAMERA_FREE_MODE)}>
-        Cámara libre
-      </button>
+      {/* Settings panel - right side */}
+      <div className={styles.rightPanel}>
+        <CameraSettings />
+      </div>
+
+      {/* Quick action button - bottom left */}
+      <div className={styles.quickActions}>
+        <button
+          className={styles.quickButton}
+          onClick={() => setCameraMode(CAMERA_FREE_MODE)}
+          title="Cambiar a modo cámara libre"
+        >
+          <span className={styles.quickButtonIcon}>🎥</span>
+          <span className={styles.quickButtonText}>Cámara Libre</span>
+        </button>
+      </div>
     </div>
   );
 };

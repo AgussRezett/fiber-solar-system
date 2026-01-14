@@ -6,6 +6,7 @@ import {
 import CelestialFeatures from './CelestialFeatures';
 import CelestialPlanetMesh from './CelestialPlanetMesh';
 import OrbitPath from './components/OrbitPath';
+import PlanetLabel from './components/PlanetLabel/PlanetLabel';
 import { useCelestialHover } from './hooks/useCelestialHover';
 import { useCelestialMotion } from './hooks/useCelestialMotion';
 import {
@@ -89,7 +90,7 @@ const CelestialBody = ({ data, children }: Props) => {
         <OrbitPath
           radius={orbitRadius}
           inclinationDeg={data.orbit.inclinationDeg}
-          color="white"
+          color={data.color || '#ffffff'}
         />
       )}
 
@@ -114,6 +115,15 @@ const CelestialBody = ({ data, children }: Props) => {
           onHoverStart={hover.onHoverStart}
           onHoverEnd={hover.onHoverEnd}
         />
+
+        {(data.type === 'planet' || data.type === 'star') && (
+          <PlanetLabel
+            name={data.name}
+            color={data.color}
+            planetId={data.id}
+            planetRadius={radius}
+          />
+        )}
 
         {children}
       </group>

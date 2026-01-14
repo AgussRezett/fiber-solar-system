@@ -2,6 +2,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, type RefObject } from 'react';
 import * as THREE from 'three';
 
+const VISIBILITY_EPSILON = 0.02;
+
 const useOrbitPathOpacity = (
   planetRadius: number,
   planetRef: RefObject<THREE.Object3D | null>,
@@ -13,10 +15,10 @@ const useOrbitPathOpacity = (
   useFrame((state) => {
     if (!planetRef.current || !orbitLineRef.current) return;
 
-    const worldPosition = new THREE.Vector3();
-    planetRef.current.getWorldPosition(worldPosition);
+    const planetPos = new THREE.Vector3();
+    planetRef.current.getWorldPosition(planetPos);
 
-    const distance = camera.position.distanceTo(worldPosition);
+    const distance = camera.position.distanceTo(planetPos);
 
     const { size } = state;
     const fov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 50;
@@ -33,21 +35,31 @@ const useOrbitPathOpacity = (
     const SHOW_THRESHOLD = 25;
     const MIN_SIZE = 5;
 
-    let opacity = 0;
+    let targetOpacity = 0;
 
     if (apparentSize > MIN_SIZE && apparentSize <= SHOW_THRESHOLD) {
       const t = (apparentSize - MIN_SIZE) / (SHOW_THRESHOLD - MIN_SIZE);
-      opacity = 1 - THREE.MathUtils.clamp(t, 0, 1);
+      targetOpacity = 1 - THREE.MathUtils.clamp(t, 0, 1);
     } else if (apparentSize <= MIN_SIZE) {
-      opacity = 1;
+      targetOpacity = 1;
     }
 
-    opacityRef.current += (opacity - opacityRef.current) * 0.1;
+    // suavizado
+    opacityRef.current += (targetOpacity - opacityRef.current) * 0.1;
 
-    const material = orbitLineRef.current.material as THREE.LineBasicMaterial;
+    const line = orbitLineRef.current;
+    const material = line.material as THREE.LineBasicMaterial;
 
-    material.opacity = opacityRef.current;
+    // 🔑 VISIBILITY REAL
+    if (opacityRef.current <= VISIBILITY_EPSILON) {
+      line.visible = false;
+      return;
+    }
+
+    // visible
+    line.visible = true;
     material.transparent = true;
+    material.opacity = opacityRef.current;
   });
 };
 

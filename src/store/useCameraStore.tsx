@@ -36,11 +36,6 @@ export const useCameraStore = create<CameraStore>((set, get) => ({
   registry: {},
 
   registerBody: (id, obj) => {
-    /* console.log('-----------------------');
-    console.log('id', id);
-    console.log('obj', obj);
-    console.log('-----------------------'); */
-
     set((s) => ({
       registry: { ...s.registry, [id]: obj },
     }));

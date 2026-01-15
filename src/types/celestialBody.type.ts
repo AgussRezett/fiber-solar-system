@@ -8,9 +8,14 @@ export interface CelestialBodyInterface {
   parentId?: string;
   radiusKm: number;
   orbit?: {
-    radiusKm: number;
-    periodDays: number;
+    semiMajorAxisKm: number;
+    eccentricity: number;
     inclinationDeg: number;
+    longitudeOfAscendingNodeDeg: number;
+    argumentOfPeriapsisDeg: number;
+    meanAnomalyAtEpochDeg: number;
+    periodDays: number;
+    epochJulianDay: number;
   } | null;
   rotation: {
     periodHours: number;

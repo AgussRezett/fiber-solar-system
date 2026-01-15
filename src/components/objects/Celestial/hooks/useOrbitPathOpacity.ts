@@ -1,35 +1,41 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, type RefObject } from 'react';
 import * as THREE from 'three';
+import { DISTANCE_KM_TO_UNITS } from '../../../../consts/scales';
 
 const VISIBILITY_EPSILON = 0.02;
 
-const useOrbitPathOpacity = (
-  planetRadius: number,
-  planetRef: RefObject<THREE.Object3D | null>,
-  orbitLineRef: RefObject<THREE.Line | null>
-) => {
-  const { camera } = useThree();
+interface Params {
+  referenceRadiusKm: number;
+  orbitCenterRef: RefObject<THREE.Object3D | null>;
+  orbitLineRef: RefObject<THREE.Line | null>;
+}
+
+const useOrbitPathOpacity = ({
+  referenceRadiusKm,
+  orbitCenterRef,
+  orbitLineRef,
+}: Params) => {
+  const { camera, size } = useThree();
   const opacityRef = useRef(0);
+  const centerPos = useRef(new THREE.Vector3());
 
-  useFrame((state) => {
-    if (!planetRef.current || !orbitLineRef.current) return;
+  useFrame(() => {
+    if (!orbitCenterRef.current || !orbitLineRef.current) return;
 
-    const planetPos = new THREE.Vector3();
-    planetRef.current.getWorldPosition(planetPos);
+    orbitCenterRef.current.getWorldPosition(centerPos.current);
 
-    const distance = camera.position.distanceTo(planetPos);
+    const distance = camera.position.distanceTo(centerPos.current);
 
-    const { size } = state;
     const fov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 50;
     const fovRad = THREE.MathUtils.degToRad(fov);
 
-    const planetDiameter = planetRadius * 2;
-    const screenHeight = size.height;
+    const planetDiameter = referenceRadiusKm * 2 * DISTANCE_KM_TO_UNITS;
+
     const distanceToCamera = Math.max(distance, 0.1);
 
     const apparentSize =
-      (planetDiameter * screenHeight) /
+      (planetDiameter * size.height) /
       (distanceToCamera * Math.tan(fovRad / 2) * 2);
 
     const SHOW_THRESHOLD = 25;
@@ -50,13 +56,11 @@ const useOrbitPathOpacity = (
     const line = orbitLineRef.current;
     const material = line.material as THREE.LineBasicMaterial;
 
-    // 🔑 VISIBILITY REAL
     if (opacityRef.current <= VISIBILITY_EPSILON) {
       line.visible = false;
       return;
     }
 
-    // visible
     line.visible = true;
     material.transparent = true;
     material.opacity = opacityRef.current;

@@ -3,9 +3,8 @@ import { useRef } from 'react';
 import { DirectionalLight, DirectionalLightHelper } from 'three';
 import SolarSystem from './components/systems/SolarSystem';
 import CameraController from './components/camera/CameraController';
-import GalaxyBackground from './scenes/GalaxyBackground';
-import AnimatedStars from './components/effects/AnimatedStars';
 import { useTargetHudSync } from './components/hud/TargetHudSync/TargetHudSync';
+import GalaxyBackground from './scenes/GalaxyBackground';
 
 const App = () => {
   const directionalLightRef = useRef<DirectionalLight>(null!);
@@ -17,7 +16,6 @@ const App = () => {
   return (
     <>
       <color attach={'background'} args={['#01010a']}></color>
-      <AnimatedStars />
       <GalaxyBackground />
 
       <SolarSystem />

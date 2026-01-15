@@ -1,48 +1,62 @@
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { useRef, type RefObject } from 'react';
-import useOrbitPathOpacity from '../hooks/useOrbitPathOpacity';
+import { useMemo, useRef } from 'react';
+import { DISTANCE_KM_TO_UNITS } from '../../../../consts/scales';
+import { calculateOrbitalPosition } from '../utils/orbitPosition';
 
 interface OrbitPathProps {
-  radius: number;
+  orbit: {
+    semiMajorAxisKm: number;
+    eccentricity: number;
+    inclinationDeg: number;
+    longitudeOfAscendingNodeDeg: number;
+    argumentOfPeriapsisDeg: number;
+    periodDays: number;
+    epochJulianDay: number;
+  };
   segments?: number;
   color?: string;
-  inclinationDeg?: number;
-  planetRadius: number;
-  planetRef: RefObject<THREE.Group | null>;
 }
 
 const OrbitPath = ({
-  radius,
-  segments = 128,
+  orbit,
+  segments = 256,
   color = '#ffffff',
-  inclinationDeg = 0,
-  planetRadius,
-  planetRef,
 }: OrbitPathProps) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  const points: THREE.Vector3[] = [];
-  for (let i = 0; i <= segments; i++) {
-    const theta = (i / segments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius)
-    );
-  }
+  const points = useMemo(() => {
+    const pts: THREE.Vector3[] = [];
 
-  useOrbitPathOpacity(planetRadius, planetRef, lineRef);
+    for (let i = 0; i <= segments; i++) {
+      const ν = (i / segments) * Math.PI * 2;
+
+      const posKm = calculateOrbitalPosition({
+        ...orbit,
+        trueAnomalyOverride: ν, // 👈 clave
+      });
+
+      pts.push(
+        new THREE.Vector3(
+          posKm.x * DISTANCE_KM_TO_UNITS,
+          posKm.y * DISTANCE_KM_TO_UNITS,
+          posKm.z * DISTANCE_KM_TO_UNITS
+        )
+      );
+    }
+
+    return pts;
+  }, [orbit, segments]);
 
   return (
-    <group rotation={[THREE.MathUtils.degToRad(inclinationDeg), 0, 0]}>
-      <Line
-        ref={lineRef}
-        points={points}
-        color={color}
-        lineWidth={1.5}
-        transparent
-        opacity={0}
-      />
-    </group>
+    <Line
+      ref={lineRef}
+      points={points}
+      color={color}
+      lineWidth={1.25}
+      transparent
+      opacity={1}
+    />
   );
 };
 

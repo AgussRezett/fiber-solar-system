@@ -5,11 +5,14 @@ import SolarSystem from './components/systems/SolarSystem';
 import CameraController from './components/camera/CameraController';
 import GalaxyBackground from './scenes/GalaxyBackground';
 import AnimatedStars from './components/effects/AnimatedStars';
+import { useTargetHudSync } from './components/hud/TargetHudSync/TargetHudSync';
 
 const App = () => {
   const directionalLightRef = useRef<DirectionalLight>(null!);
 
   useHelper(directionalLightRef, DirectionalLightHelper, 1, 'hotpink');
+
+  useTargetHudSync();
 
   return (
     <>

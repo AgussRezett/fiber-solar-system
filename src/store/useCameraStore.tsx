@@ -19,8 +19,6 @@ interface CameraStore {
 
   targetHud: {
     visible: boolean;
-    opacity: number;
-    distance: number;
     name?: string;
     type?: string;
     radiusKm?: number;

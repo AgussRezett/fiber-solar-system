@@ -6,24 +6,35 @@
   z-index: 999999999;
 
   color: rgba(220, 230, 245, 0.95);
-  font-family: 'Inter', system-ui, sans-serif;
-
-  background: rgba(6, 10, 18, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  padding: 14px 18px;
   border-radius: 8px;
 
   min-width: 220px;
 
   opacity: 0;
   transition: opacity 200ms ease-out;
-  transition: all 200ms ease-in-out;
 }
 
 .containerVisible {
   opacity: 1;
+}
+
+.blurBackground {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(6, 10, 18, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  border-radius: 8px;
+}
+
+.content {
+  position: relative;
+  padding: 14px 18px;
+
+  color: rgba(220, 230, 245, 0.95);
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 section {

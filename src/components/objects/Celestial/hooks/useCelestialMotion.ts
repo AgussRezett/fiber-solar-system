@@ -1,35 +1,39 @@
 import { useFrame } from '@react-three/fiber';
-import type { RefObject } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Group, Mesh } from 'three';
 
+const ROTATION_TIME_SCALE = 2000; // 👈 ajustable
+
 type Props = {
-  orbitRef: RefObject<Group | null>;
-  meshRef: RefObject<Mesh | null>;
-  cloudRef: RefObject<Group | null>;
-  orbitSpeed: number;
-  rotationSpeed: number;
-  hasClouds: boolean;
+  meshRef: React.RefObject<Mesh | null>;
+  cloudRef?: React.RefObject<Group | null>;
+  rotationPeriodHours?: number;
 };
 
 export const useCelestialMotion = ({
-  orbitRef,
   meshRef,
   cloudRef,
-  orbitSpeed,
-  rotationSpeed,
-  hasClouds,
+  rotationPeriodHours,
 }: Props) => {
-  useFrame((_, delta) => {
-    if (orbitRef.current) {
-      orbitRef.current.rotation.y += orbitSpeed * delta * 0.1;
+  const angularSpeed = useRef(0);
+
+  useEffect(() => {
+    if (rotationPeriodHours && rotationPeriodHours > 0) {
+      angularSpeed.current = (Math.PI * 2) / (rotationPeriodHours * 3600);
+    } else {
+      angularSpeed.current = 0;
     }
+  }, [rotationPeriodHours]);
+
+  useFrame((_, delta) => {
+    const rotationDelta = angularSpeed.current * delta * ROTATION_TIME_SCALE;
 
     if (meshRef.current) {
-      meshRef.current.rotation.y += rotationSpeed * delta;
+      meshRef.current.rotation.y += rotationDelta;
     }
 
-    if (cloudRef.current && hasClouds) {
-      cloudRef.current.rotation.y += rotationSpeed * delta;
+    if (cloudRef?.current) {
+      cloudRef.current.rotation.y += rotationDelta * 1.05;
     }
   });
 };

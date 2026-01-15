@@ -84,7 +84,7 @@
     "parentId": "PL_EARTH",
     "radiusKm": 1737.4,
     "orbit": {
-      "semiMajorAxisKm": 384400,
+      "semiMajorAxisKm": 90440,
       "eccentricity": 0.0549,
       "inclinationDeg": 5.145,
       "longitudeOfAscendingNodeDeg": 125.08,

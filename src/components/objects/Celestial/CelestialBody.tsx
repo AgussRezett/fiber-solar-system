@@ -26,6 +26,7 @@ import { dateToJulianDay } from './utils/dateToJulian';
 import { SIMULATION_DATE } from './consts/simulationTime';
 import { calculateOrbitalPosition } from './utils/orbitPosition';
 import OrbitPath from './components/OrbitPath';
+import { useCelestialMotion } from './hooks/useCelestialMotion';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -83,6 +84,12 @@ const CelestialBody = ({ data, children }: Props) => {
       posKm.z * DISTANCE_KM_TO_UNITS
     );
   }, [data.orbit]);
+
+  useCelestialMotion({
+    meshRef,
+    cloudRef,
+    rotationPeriodHours: data.rotation?.periodHours,
+  });
 
   return (
     <>

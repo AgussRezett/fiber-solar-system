@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useMemo, useRef } from 'react';
 import { DISTANCE_KM_TO_UNITS } from '../../../../consts/scales';
 import { calculateOrbitalPosition } from '../utils/orbitPosition';
+import useOrbitPathOpacity from '../hooks/useOrbitPathOpacity';
 
 interface OrbitPathProps {
   orbit: {
@@ -14,12 +15,16 @@ interface OrbitPathProps {
     periodDays: number;
     epochJulianDay: number;
   };
+  referenceRadiusKm: number;
+  bodyRef: React.RefObject<THREE.Object3D | null>;
   segments?: number;
   color?: string;
 }
 
 const OrbitPath = ({
   orbit,
+  referenceRadiusKm,
+  bodyRef,
   segments = 256,
   color = '#ffffff',
 }: OrbitPathProps) => {
@@ -33,7 +38,7 @@ const OrbitPath = ({
 
       const posKm = calculateOrbitalPosition({
         ...orbit,
-        trueAnomalyOverride: ν, // 👈 clave
+        trueAnomalyOverride: ν,
       });
 
       pts.push(
@@ -48,6 +53,13 @@ const OrbitPath = ({
     return pts;
   }, [orbit, segments]);
 
+  // 🔑 Fade orbital alineado con el cuerpo
+  useOrbitPathOpacity({
+    referenceRadiusKm,
+    orbitCenterRef: bodyRef,
+    orbitLineRef: lineRef,
+  });
+
   return (
     <Line
       ref={lineRef}
@@ -55,7 +67,7 @@ const OrbitPath = ({
       color={color}
       lineWidth={1.25}
       transparent
-      opacity={1}
+      opacity={0}
     />
   );
 };

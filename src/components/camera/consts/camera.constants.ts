@@ -1,4 +1,4 @@
-export const BASE_MOVE_SPEED = 1000;
+export const BASE_MOVE_SPEED = 600;
 export const FAST_MULTIPLIER = 6;
 export const SENSITIVITY = 0.004;
 export const MAX_PITCH = Math.PI / 2 - 0.01;

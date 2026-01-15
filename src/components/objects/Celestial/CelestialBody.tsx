@@ -37,7 +37,7 @@ const CelestialBody = ({ data, children }: Props) => {
   const meshRef = useRef<Mesh>(null);
   const cloudRef = useRef<Group>(null);
 
-  const { startOrbitById, registerBody, registry } = useCameraStore();
+  const { startOrbitById, registerBody } = useCameraStore();
 
   useEffect(() => {
     if (bodyRef.current) registerBody(data.id, bodyRef.current);
@@ -84,14 +84,15 @@ const CelestialBody = ({ data, children }: Props) => {
     );
   }, [data.orbit]);
 
-  const parentBodyRef = data.parentId
-    ? (registry[data.parentId] as THREE.Group | undefined)
-    : undefined;
-
   return (
     <>
-      {data.orbit && parentBodyRef && (
-        <OrbitPath orbit={data.orbit} color={data.color} />
+      {data.orbit && (
+        <OrbitPath
+          orbit={data.orbit}
+          referenceRadiusKm={data.radiusKm}
+          bodyRef={bodyRef}
+          color={data.color}
+        />
       )}
 
       <group ref={bodyRef}>

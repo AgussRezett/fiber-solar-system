@@ -28,7 +28,8 @@ const OrbitPath = ({
   segments = 256,
   color = '#ffffff',
 }: OrbitPathProps) => {
-  const lineRef = useRef<THREE.Line>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lineRef = useRef<any>(null);
 
   const points = useMemo(() => {
     const pts: THREE.Vector3[] = [];

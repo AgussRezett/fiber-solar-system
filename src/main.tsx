@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber';
 createRoot(document.getElementById('root')!).render(
   <>
     <CameraHud />
-    <Canvas camera={{ position: [0, 5, 5], far: 100_000_000 }} shadows>
+    <Canvas camera={{ position: [0, 50, 200], far: 100_000_000 }} shadows>
       <App />
     </Canvas>
   </>

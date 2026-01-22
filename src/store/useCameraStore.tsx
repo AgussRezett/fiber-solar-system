@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
 import {
-  CAMERA_FREE_MODE,
-  CAMERA_TRANSITION_MODE,
+  CAMERA_ORBIT_MODE,
+  CAMERA_TRANSITION_MODE
 } from '../types/cameraModes.type';
 
 interface CameraStore {
@@ -27,7 +27,7 @@ interface CameraStore {
 }
 
 export const useCameraStore = create<CameraStore>((set, get) => ({
-  cameraMode: CAMERA_FREE_MODE,
+  cameraMode: CAMERA_ORBIT_MODE,
   setCameraMode: (mode) => set({ cameraMode: mode }),
 
   focusTarget: null,

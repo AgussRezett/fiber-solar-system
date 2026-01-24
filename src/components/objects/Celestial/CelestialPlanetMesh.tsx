@@ -8,7 +8,8 @@ type Props = {
   axialTilt: number;
   displacementScale: number;
   shininess: number;
-  onClick: () => void;
+  onPointerDown: () => void;
+  onPointerUp: () => void;
   onHoverStart: () => void;
   onHoverEnd: () => void;
 };
@@ -21,7 +22,8 @@ const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
       axialTilt,
       displacementScale,
       shininess,
-      onClick,
+      onPointerDown,
+      onPointerUp,
       onHoverStart,
       onHoverEnd,
     },
@@ -33,10 +35,8 @@ const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
         rotation={[0, 0, axialTilt]}
         castShadow
         receiveShadow
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
+        onPointerUp={() => onPointerUp()}
+        onPointerDown={() => onPointerDown()}
         onPointerEnter={(e) => {
           e.stopPropagation();
           onHoverStart();
@@ -53,7 +53,7 @@ const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
           displacementScale={displacementScale}
           shininess={shininess}
         />
-      </mesh>
+      </mesh >
     );
   }
 );

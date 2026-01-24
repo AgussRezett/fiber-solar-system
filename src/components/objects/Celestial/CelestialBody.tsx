@@ -119,7 +119,8 @@ const CelestialBody = ({ data, children }: Props) => {
           axialTilt={axialTilt}
           displacementScale={visuals.displacementScale ?? 0}
           shininess={visuals.shininess ?? 30}
-          onClick={() => startOrbitById?.(data.id)}
+          onPointerDown={() => startOrbitById?.(data.id)}
+          onPointerUp={() => startOrbitById?.(data.id)}
           onHoverStart={hover.onHoverStart}
           onHoverEnd={hover.onHoverEnd}
         />

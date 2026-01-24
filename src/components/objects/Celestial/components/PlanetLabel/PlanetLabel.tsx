@@ -49,12 +49,14 @@ const PlanetLabel = ({
           <div
             className={styles.orientationCircle}
             style={{ borderColor: color }}
-            onClick={handleClick}
+            onPointerDown={handleClick}
+            onPointerUp={handleClick}
             title={`Navegar a ${name}`}
           />
           <span
             className={styles.labelText}
-            onClick={handleClick}
+            onPointerDown={handleClick}
+            onPointerUp={handleClick}
             title={`Navegar a ${name}`}
           >
             {name}

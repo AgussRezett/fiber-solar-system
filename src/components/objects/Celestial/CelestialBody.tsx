@@ -25,8 +25,8 @@ import type { CelestialBodyInterface } from '../../../types/celestialBody.type';
 import { dateToJulianDay } from './utils/dateToJulian';
 import { SIMULATION_DATE } from './consts/simulationTime';
 import { calculateOrbitalPosition } from './utils/orbitPosition';
-import OrbitPath from './components/OrbitPath';
 import { useCelestialMotion } from './hooks/useCelestialMotion';
+import OrbitPath from './components/OrbitPath';
 
 interface Props {
   data: CelestialBodyInterface;
@@ -119,6 +119,7 @@ const CelestialBody = ({ data, children }: Props) => {
           axialTilt={axialTilt}
           displacementScale={visuals.displacementScale ?? 0}
           shininess={visuals.shininess ?? 30}
+          emissive={visuals.emissive ?? false}
           onPointerDown={() => startOrbitById?.(data.id)}
           onPointerUp={() => startOrbitById?.(data.id)}
           onHoverStart={hover.onHoverStart}
@@ -133,7 +134,6 @@ const CelestialBody = ({ data, children }: Props) => {
             planetRadius={radius}
           />
         )}
-
         {children}
       </group>
     </>

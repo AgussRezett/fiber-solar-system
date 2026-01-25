@@ -8,6 +8,7 @@ type Props = {
   axialTilt: number;
   displacementScale: number;
   shininess: number;
+  emissive: boolean;
   onPointerDown: () => void;
   onPointerUp: () => void;
   onHoverStart: () => void;
@@ -22,6 +23,7 @@ const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
       axialTilt,
       displacementScale,
       shininess,
+      emissive,
       onPointerDown,
       onPointerUp,
       onHoverStart,
@@ -52,8 +54,9 @@ const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
           {...textures}
           displacementScale={displacementScale}
           shininess={shininess}
+          emissive={emissive}
         />
-      </mesh >
+      </mesh>
     );
   }
 );

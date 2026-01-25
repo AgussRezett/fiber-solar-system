@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import * as THREE from 'three';
 import {
   CAMERA_ORBIT_MODE,
-  CAMERA_TRANSITION_MODE
+  CAMERA_TRANSITION_MODE,
 } from '../types/cameraModes.type';
 
 interface CameraStore {
@@ -42,8 +42,6 @@ export const useCameraStore = create<CameraStore>((set, get) => ({
   },
 
   startOrbitById: (id: string) => {
-    console.log('registry', get().registry);
-
     const obj = get().registry[id];
     if (!obj) return;
 

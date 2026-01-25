@@ -19,7 +19,7 @@ export const useCelestialHover = (
     if (meshRef.current) {
       const mat = meshRef.current.material as THREE.MeshPhongMaterial;
 
-      mat.emissive.set('#ffffff');
+      //mat.emissive.set('#ffffff');
       mat.emissiveIntensity = eased * 0.15;
       mat.shininess = baseShininess + eased * 40;
     }

@@ -67,7 +67,6 @@ const CelestialBody = ({ data, children }: Props) => {
 
   const hover = useCelestialHover(meshRef, visuals.shininess ?? 30);
 
-  // ✅ POSICIÓN ORBITAL ÚNICA (fuente de verdad)
   useEffect(() => {
     if (!data.orbit || !bodyRef.current) return;
 
@@ -119,11 +118,12 @@ const CelestialBody = ({ data, children }: Props) => {
           axialTilt={axialTilt}
           displacementScale={visuals.displacementScale ?? 0}
           shininess={visuals.shininess ?? 30}
-          emissive={visuals.emissive ?? false}
+          emissive={visuals.emissive ?? null}
           onPointerDown={() => startOrbitById?.(data.id)}
           onPointerUp={() => startOrbitById?.(data.id)}
           onHoverStart={hover.onHoverStart}
           onHoverEnd={hover.onHoverEnd}
+          material={visuals.material}
         />
 
         {(data.type === 'planet' || data.type === 'star') && (

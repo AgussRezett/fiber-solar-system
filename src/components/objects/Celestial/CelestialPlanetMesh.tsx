@@ -3,12 +3,14 @@ import * as THREE from 'three';
 
 type Props = {
   radius: number;
+  material: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   textures: any;
   axialTilt: number;
   displacementScale: number;
   shininess: number;
-  emissive: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  emissive: any;
   onPointerDown: () => void;
   onPointerUp: () => void;
   onHoverStart: () => void;
@@ -17,45 +19,41 @@ type Props = {
 
 const CelestialPlanetMesh = forwardRef<THREE.Mesh, Props>(
   (
-    {
-      radius,
-      textures,
-      axialTilt,
-      displacementScale,
-      shininess,
-      emissive,
-      onPointerDown,
-      onPointerUp,
-      onHoverStart,
-      onHoverEnd,
-    },
+    props,
     ref
   ) => {
+
     return (
       <mesh
         ref={ref}
-        rotation={[0, 0, axialTilt]}
+        rotation={[0, 0, props.axialTilt]}
         castShadow
         receiveShadow
-        onPointerUp={() => onPointerUp()}
-        onPointerDown={() => onPointerDown()}
+        onPointerUp={() => props.onPointerUp()}
+        onPointerDown={() => props.onPointerDown()}
         onPointerEnter={(e) => {
           e.stopPropagation();
-          onHoverStart();
+          props.onHoverStart();
           document.body.style.cursor = 'pointer';
         }}
         onPointerLeave={() => {
-          onHoverEnd();
+          props.onHoverEnd();
           document.body.style.cursor = 'default';
         }}
       >
-        <sphereGeometry args={[radius, 32, 32]} />
-        <meshPhongMaterial
-          {...textures}
-          displacementScale={displacementScale}
-          shininess={shininess}
-          emissive={emissive}
-        />
+        <sphereGeometry args={[props.radius, 32, 32]} />
+        {
+          props.material === 'basic' ?
+            <meshBasicMaterial
+              {...props.textures}
+            /> :
+            <meshPhongMaterial
+              {...props.textures}
+              displacementScale={props.displacementScale}
+              shininess={props.shininess}
+            /* emissive={props.emissive ? new THREE.Color('#ffffff') : new THREE.Color('#000000')} */
+            />
+        }
       </mesh>
     );
   }

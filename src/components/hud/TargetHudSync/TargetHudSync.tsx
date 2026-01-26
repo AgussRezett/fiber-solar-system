@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useCameraStore } from '../../../store/useCameraStore';
 import celestialObjects from '../../../data/solarSystem.json';
 
-export const useTargetHudSync = () => {
+const useTargetHudSync = () => {
   const { focusTargetId, setTargetHud } = useCameraStore();
 
   useEffect(() => {
@@ -23,3 +23,11 @@ export const useTargetHudSync = () => {
     });
   }, [focusTargetId, setTargetHud]);
 };
+
+
+const TargetHudSync = () => {
+  useTargetHudSync()
+  return null
+}
+
+export default TargetHudSync

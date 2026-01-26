@@ -1,11 +1,13 @@
-import { useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { DISTANCE_KM_TO_UNITS, GALAXY_RADIUS_KM } from '../consts/scales';
 
 const GalaxyBackground = () => {
-  const texture = useTexture('/assets/stars_milky_way.jpg');
+  const texture = useMemo(
+    () => new THREE.TextureLoader().load('/assets/stars_milky_way.jpg'),
+    []
+  );
   const galaxyRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ camera }) => {

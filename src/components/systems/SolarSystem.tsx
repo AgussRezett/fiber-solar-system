@@ -6,7 +6,6 @@ import { useCameraStore } from '../../store/useCameraStore';
 import { SUN_ID } from '../../consts/system';
 
 const SolarSystem = () => {
-  const { startOrbitById } = useCameraStore();
   const childrenMap: Record<string, CelestialBodyInterface[]> = {};
 
   (celestialObjects as CelestialBodyInterface[]).forEach((body) => {
@@ -22,9 +21,8 @@ const SolarSystem = () => {
   );
 
   useEffect(() => {
-    startOrbitById(SUN_ID);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [celestialObjects]);
+    useCameraStore.getState().startOrbitById(SUN_ID);
+  }, []);
 
   return <>{childrenMap.ROOT?.map(renderBody)}</>;
 };

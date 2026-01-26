@@ -23,7 +23,7 @@ export type AtmosphereVisual = {
 
 export type CelestialVisualInterface = {
   material: string;
-  emissive?: boolean;
+  emissive?: string;
   map?: string;
   normalMap?: string;
   specularMap?: string;
@@ -42,7 +42,7 @@ export type CelestialVisualInterface = {
 export const CELESTIAL_VISUALS = {
   SOL_001: {
     material: 'basic',
-    emissive: true,
+    emissive: '#ffffff',
     map: '/assets/sun/map.jpg',
     toneMapped: false,
   },

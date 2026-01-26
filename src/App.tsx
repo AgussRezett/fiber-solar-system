@@ -1,19 +1,28 @@
-import SolarSystem from './components/systems/SolarSystem';
-import CameraController from './components/camera/CameraController';
-import { useTargetHudSync } from './components/hud/TargetHudSync/TargetHudSync';
-import GalaxyBackground from './scenes/GalaxyBackground';
-import SunLight from './components/effects/SunLight/SunLight';
+import { Suspense, useEffect } from "react";
+import TargetHudSync from "./components/hud/TargetHudSync/TargetHudSync";
+import GalaxyBackground from "./scenes/GalaxyBackground";
+import CameraController from "./components/camera/CameraController";
+import SunLight from "./components/effects/SunLight/SunLight";
+import SolarSystem from "./components/systems/SolarSystem";
+import { textureLoader } from "./components/objects/Celestial/utils/textureLoader";
 
 const App = () => {
-  useTargetHudSync();
+  useEffect(() => {
+    textureLoader.preloadAllTextures();
+  }, []);
 
   return (
     <>
       <color attach={'background'} args={['#01010a']}></color>
       <SolarSystem />
-      <SunLight />
+      <Suspense fallback={null}>
+        <SunLight />
+      </Suspense>
       <CameraController />
-      <GalaxyBackground />
+      <Suspense fallback={null}>
+        <GalaxyBackground />
+      </Suspense>
+      <TargetHudSync />
     </>
   );
 };

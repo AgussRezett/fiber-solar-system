@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import PlanetRings from './components/PlanetRings';
-import Atmosphere from './components/Atmosphere';
 import Clouds from './components/Clouds';
 
 type Props = {
@@ -24,15 +22,15 @@ const CelestialFeatures = ({
 }: Props) => {
   return (
     <>
-      {features?.rings && (
+      {/* {features?.rings && (
         <group rotation={[0, 0, axialTilt]}>
           <PlanetRings radius={radius} {...features.rings} />
         </group>
-      )}
+      )} */}
 
-      {features?.atmosphere && (
+      {/* {features?.atmosphere && (
         <Atmosphere radius={radius} {...features.atmosphere} />
-      )}
+      )} */}
 
       {features?.clouds?.map && (
         <Clouds

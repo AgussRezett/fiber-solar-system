@@ -1,4 +1,3 @@
-import { useTexture } from '@react-three/drei';
 import { useEffect, useRef } from 'react';
 import type { Group, Mesh } from 'three';
 import * as THREE from 'three';
@@ -8,9 +7,6 @@ import {
   RADIUS_KM_TO_UNITS,
 } from '../../../consts/scales';
 
-import CelestialFeatures from './CelestialFeatures';
-import CelestialPlanetMesh from './CelestialPlanetMesh';
-import PlanetLabel from './components/PlanetLabel/PlanetLabel';
 
 import { useCelestialHover } from './hooks/useCelestialHover';
 
@@ -26,6 +22,8 @@ import { dateToJulianDay } from './utils/dateToJulian';
 import { SIMULATION_DATE } from './consts/simulationTime';
 import { calculateOrbitalPosition } from './utils/orbitPosition';
 import { useCelestialMotion } from './hooks/useCelestialMotion';
+import CelestialPlanetMesh from './CelestialPlanetMesh';
+import PlanetLabel from './components/PlanetLabel/PlanetLabel';
 import OrbitPath from './components/OrbitPath';
 
 interface Props {
@@ -38,26 +36,14 @@ const CelestialBody = ({ data, children }: Props) => {
   const meshRef = useRef<Mesh>(null);
   const cloudRef = useRef<Group>(null);
 
-  const { startOrbitById, registerBody } = useCameraStore();
 
   useEffect(() => {
-    if (bodyRef.current) registerBody(data.id, bodyRef.current);
-  }, [data.id, registerBody]);
+    if (bodyRef.current) useCameraStore.getState().registerBody(data.id, bodyRef.current);
+  }, [data.id]);
 
   const visuals: CelestialVisualInterface =
     CELESTIAL_VISUALS[data.id] ??
     DEFAULT_VISUALS_BY_TYPE[data.type as keyof typeof DEFAULT_VISUALS_BY_TYPE];
-
-  const textures = useTexture(
-    Object.fromEntries(
-      Object.entries({
-        map: visuals.map,
-        normalMap: visuals.normalMap,
-        specularMap: visuals.specularMap,
-        displacementMap: visuals.displacementMap,
-      }).filter(([, v]) => v !== undefined)
-    ) as Record<string, string>
-  );
 
   const radius = data.radiusKm * RADIUS_KM_TO_UNITS;
 
@@ -102,28 +88,19 @@ const CelestialBody = ({ data, children }: Props) => {
       )}
 
       <group ref={bodyRef}>
-        <CelestialFeatures
-          features={visuals.features}
-          radius={radius}
-          axialTilt={axialTilt}
-          cloudRef={cloudRef}
-          textures={textures}
-          displacementScale={visuals.displacementScale ?? 0}
-        />
+
 
         <CelestialPlanetMesh
           ref={meshRef}
+          cloudRef={cloudRef}
+          planetId={data.id}
+          visuals={visuals}
           radius={radius}
-          textures={textures}
           axialTilt={axialTilt}
-          displacementScale={visuals.displacementScale ?? 0}
-          shininess={visuals.shininess ?? 30}
-          emissive={visuals.emissive ?? null}
-          onPointerDown={() => startOrbitById?.(data.id)}
-          onPointerUp={() => startOrbitById?.(data.id)}
+          onPointerDown={() => useCameraStore.getState().startOrbitById?.(data.id)}
+          onPointerUp={() => useCameraStore.getState().startOrbitById?.(data.id)}
           onHoverStart={hover.onHoverStart}
           onHoverEnd={hover.onHoverEnd}
-          material={visuals.material}
         />
 
         {(data.type === 'planet' || data.type === 'star') && (
